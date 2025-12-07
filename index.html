@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بصيرة للخدمات الرقمية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0c1a2d 0%, #1a3a5f 100%);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            z-index: 10;
+            position: relative;
+            max-width: 800px;
+        }
+        
+        .logo-container {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .logo img {
+            width: 75%;
+            height: 75%;
+            object-fit: contain;
+            filter: brightness(1.2);
+        }
+        
+        .coming-soon {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        /* دوائر الضباب المتحركة */
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(32, 156, 255, 0.3) 0%, rgba(32, 156, 255, 0.1) 70%, transparent 100%);
+            filter: blur(40px);
+            opacity: 0.7;
+            animation: float 15s infinite linear;
+        }
+        
+        .circle:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 20s;
+        }
+        
+        .circle:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+            animation-duration: 25s;
+        }
+        
+        .circle:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            bottom: 10%;
+            left: 20%;
+            animation-delay: -10s;
+            animation-duration: 18s;
+        }
+        
+        .circle:nth-child(4) {
+            width: 450px;
+            height: 450px;
+            top: 20%;
+            right: 5%;
+            animation-delay: -15s;
+            animation-duration: 30s;
+        }
+        
+        .circle:nth-child(5) {
+            width: 250px;
+            height: 250px;
+            bottom: 20%;
+            right: 30%;
+            animation-delay: -8s;
+            animation-duration: 22s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 40px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(32, 156, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(32, 156, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(32, 156, 255, 0);
+            }
+        }
+        
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .logo {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .coming-soon {
+                font-size: 2.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+                padding: 0 1rem;
+            }
+            
+            .circle {
+                filter: blur(30px);
+            }
+            
+            .circle:nth-child(1),
+            .circle:nth-child(2),
+            .circle:nth-child(3),
+            .circle:nth-child(4),
+            .circle:nth-child(5) {
+                width: 250px;
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .coming-soon {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- دوائر الضباب المتحركة -->
+    <div class="circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo pulse">
+                <!-- إذا كان ملف logo.png موجود في نفس المجلد -->
+                <img src="logo.png" alt="شعار الموقع" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiByeD0iMTAwIiBmaWxsPSIjMjA5Q0ZGIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8cGF0aCBkPSJNMTQwIDcwTDYwIDEzMEw4MCAxNzBMMTIwIDE3MEwxNDAgMTMwTDEyMCA5MEw4MCA5MEw2MCA3MEgxNDBaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNjAgNzBMMTAwIDMwTDE0MCA3MEwxMjAgOTBMODAgOTBMNjAgNzBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjciLz4KPC9zdmc+'">
+            </div>
+            <h1 class="coming-soon">قريبًا</h1>
+        </div>
+        <p class="subtitle">نحن نعمل على شيء مذهل! هذا الموقع قيد التطوير وسنعود قريبًا بمنتج جديد ومثير.</p>
+    </div>
+
+    <script>
+        // إضافة تأثيرات تفاعلية بسيطة للصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo');
+            
+            // تأثير عند مرور الماوس على الشعار
+            logo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            logo.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+            
+            // رسالة تحميل إذا لم يتم العثور على الصورة
+            const logoImg = document.querySelector('.logo img');
+            logoImg.addEventListener('error', function() {
+                // إذا فشل تحميل الصورة، نعرض رسالة بديلة
+                const logoContainer = document.querySelector('.logo');
+                logoContainer.innerHTML = '<span style="font-size: 3rem; font-weight: bold; color: white;">LOGO</span>';
+                logoContainer.style.display = 'flex';
+                logoContainer.style.alignItems = 'center';
+                logoContainer.style.justifyContent = 'center';
+            });
+            
+            // تحريك الدوائر بشكل عشوائي أكثر
+            const circles = document.querySelectorAll('.circle');
+            circles.forEach((circle, index) => {
+                // تأخيرات عشوائية للحركة
+                const delay = Math.random() * -20;
+                const duration = 15 + Math.random() * 15;
+                
+                circle.style.animationDelay = `${delay}s`;
+                circle.style.animationDuration = `${duration}s`;
+                
+                // ألوان زرقاء متنوعة
+                const blueShades = [
+                    'rgba(32, 156, 255, 0.3)',
+                    'rgba(0, 122, 255, 0.25)',
+                    'rgba(52, 152, 219, 0.3)',
+                    'rgba(41, 128, 185, 0.25)',
+                    'rgba(30, 100, 200, 0.3)'
+                ];
+                
+                const randomColor = blueShades[Math.floor(Math.random() * blueShades.length)];
+                circle.style.background = `radial-gradient(circle, ${randomColor} 0%, rgba(32, 156, 255, 0.1) 70%, transparent 100%)`;
+            });
+        });
+    </script>
+</body>
+</html>
