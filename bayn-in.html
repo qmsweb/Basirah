@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta property="og:title" content="منصة بَيْن | دعوة خاصة">
+    <meta property="og:title" content="دعوة خاصة | منصة بَيْن">
     <meta property="og:description" content="لديك دعوة خاصة، اضغط لفتحها">
-    <meta property="og:image" content="https://bayn.basirah.me/assets/images/invite-cover.jpg">
-    <meta property="og:url" content="https://bayn.basirah.me/">
+    <meta property="og:image" content="https://www.motanabi.com/assets/images/invite-cover.jpg">
+    <meta property="og:url" content="https://www.motanabi.com/">
     <meta property="og:type" content="website">
 
     <meta charset="UTF-8">
@@ -35,10 +35,10 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow: hidden; /* لمنع ظهور شريط تمرير أثناء الحركة */
+            overflow: hidden;
         }
 
-        /* --- 1. تنسيق الظرف (المرحلة الأولى) --- */
+        /* --- تنسيق الظرف --- */
         .envelope-stage {
             cursor: pointer;
             text-align: center;
@@ -56,7 +56,7 @@
             justify-content: center;
             margin: 0 auto 20px;
             box-shadow: 0 15px 35px rgba(14, 102, 102, 0.3);
-            animation: pulse 2s infinite; /* أنيميشن النبض */
+            animation: pulse 2s infinite;
             position: relative;
         }
 
@@ -73,7 +73,7 @@
             display: block;
         }
 
-        /* --- 2. تنسيق بطاقة الدعوة (المرحلة الثانية) --- */
+        /* --- تنسيق بطاقة الدعوة --- */
         .invitation-container {
             background: #ffffff;
             border-radius: var(--radius);
@@ -83,20 +83,16 @@
             max-width: 500px;
             border: 1px solid rgba(14, 102, 102, 0.05);
             box-shadow: var(--shadow-md);
-            
-            /* الإخفاء المبدئي */
             display: none; 
             opacity: 0;
             transform: scale(0.9) translateY(20px);
         }
 
-        /* الكلاس الذي سيتم إضافته بالجافاسكريبت للإظهار */
         .invitation-container.show {
             display: block;
             animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* أيقونة أعلى البطاقة (مفتوحة) */
         .card-icon {
             color: var(--secondary-color);
             font-size: 40px;
@@ -119,7 +115,6 @@
             display: inline-block;
         }
         
-        /* زخرفة بسيطة تحت الاسم */
         .guest-name::after {
             content: '';
             display: block;
@@ -173,20 +168,19 @@
         <h2 class="guest-name" id="guestName">...</h2>
         
         <p class="invitation-text">
-            يسرنا دعوتكم لزيارة منصة المتنبي بحلتها الجديدة<br>
-            يوم الخميس الموافق 1 مايو 2025<br>
-            في تمام الساعة 10:00 صباحًا (عن بُعد)
+            يسعدنا دعوتكم لحضور إطلاق منصة "بَيْن"<br>
+            ضمن برنامج احتفال جامعة الشرقية باليوم العالمي للغة العربية<br>
+            يوم الاثنين 22 ديسمبر 2025<br>
+            في تمام الساعة 9:00 صباحًا
         </p>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // تعريف العناصر
             const envelopeBtn = document.getElementById('envelopeBtn');
             const inviteCard = document.getElementById('inviteCard');
             const guestNameElement = document.getElementById('guestName');
 
-            // 1. جلب البيانات فور تحميل الصفحة (في الخلفية)
             const urlParams = new URLSearchParams(window.location.search);
             const guestId = urlParams.get('id') || '1';
 
@@ -205,15 +199,11 @@
                     guestNameElement.textContent = "ضيفنا الكريم";
                 });
 
-            // 2. تفعيل النقر على الظرف
             envelopeBtn.addEventListener('click', function() {
-                // إخفاء الظرف بتأثير
                 this.style.animation = 'fadeOut 0.5s forwards';
-                
-                // إظهار البطاقة بعد جزء من الثانية
                 setTimeout(() => {
-                    this.style.display = 'none'; // إزالة الظرف تماماً
-                    inviteCard.classList.add('show'); // تفعيل كلاس الظهور للبطاقة
+                    this.style.display = 'none';
+                    inviteCard.classList.add('show');
                 }, 300);
             });
         });
