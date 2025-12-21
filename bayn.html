@@ -12,308 +12,189 @@
         :root {
             --primary-color: #0e6666;
             --secondary-color: #4fc3c3;
-            --bg-light: #f4fbfb; /* خلفية أفتح قليلاً */
+            --bg-light: #f4fbfb;
             --text-dark: #2c3e50;
+            --white: #ffffff;
         }
 
-        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-
-        html, body {
-            height: 100%;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* يمنع شريط التمرير */
+            font-family: 'Cairo', sans-serif;
         }
 
-        body {
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
             background-color: var(--bg-light);
-            /* نمط خلفية أكثر نعومة للتصميم المفتوح */
-            background-image: 
-                radial-gradient(circle at 100% 50%, transparent 20%, rgba(14, 102, 102, 0.05) 21%, rgba(14, 102, 102, 0.05) 34%, transparent 35%, transparent),
-                radial-gradient(circle at 0% 50%, transparent 20%, rgba(14, 102, 102, 0.05) 21%, rgba(14, 102, 102, 0.05) 34%, transparent 35%, transparent) center center;
-            background-size: 100% 100%;
-            background-attachment: fixed;
+            background-image: linear-gradient(135deg, var(--white) 0%, var(--bg-light) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-            color: var(--text-dark);
+        .main-container {
+            background: var(--white);
+            width: 90%;
+            max-width: 1000px;
+            height: 90vh; 
+            max-height: 800px; 
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(14, 102, 102, 0.08);
+            padding: 3vh 4vw;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* توسيط عمودي لكل المحتوى */
-            padding: 20px;
+            justify-content: space-between;
+            position: relative;
+            border: 1px solid rgba(79, 195, 195, 0.1);
+        }
+
+        /* قسم الشعار */
+        .logo-section {
+            flex: 0 1 auto;
             text-align: center;
         }
-
-        /* حاوية لضبط أقصى عرض للمحتوى */
-        .content-wrapper {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* استخدام vh للتأكد من أن المحتوى لا يتجاوز ارتفاع الشاشة */
-            max-height: 95vh; 
-            justify-content: space-between; /* توزيع المساحات رأسياً */
+        .logo-section img {
+            height: auto;
+            max-height: 10vh; 
+            min-height: 60px;
         }
 
-        /* --- الشعار الحر --- */
-        .naked-logo {
-            margin-top: 2vh;
-            margin-bottom: 3vh;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        .naked-logo img {
-            /* ارتفاع نسبي للشاشة */
-            height: 12vh; 
-            max-height: 120px;
-            width: auto;
-            filter: drop-shadow(0 5px 10px rgba(14, 102, 102, 0.2));
-        }
-
-        /* --- قسم النصوص --- */
-        .text-content {
-            flex-grow: 1; /* يأخذ المساحة المتاحة في المنتصف */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-bottom: 2vh;
-        }
-
+        /* قسم الراعي */
         .sponsor-section {
-            margin-bottom: 2vh;
+            flex: 0 1 auto;
+            text-align: center;
+            width: 80%;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 2vh;
         }
         .sponsor-title {
-            color: #666;
-            font-size: 1.1rem;
-            margin: 0;
-            font-weight: 600;
+            color: var(--text-dark);
+            opacity: 0.7;
+            font-size: 1rem;
+            margin-bottom: 0.5vh;
         }
         .sponsor-name {
             color: var(--primary-color);
-            font-size: 1.8rem; 
+            font-size: calc(1.2rem + 0.8vw);
             font-weight: 800;
-            margin: 10px 0;
             line-height: 1.3;
+            margin-bottom: 0.5vh;
         }
         .sponsor-role {
-            color: #555;
+            color: var(--secondary-color);
+            font-weight: 700;
             font-size: 1.1rem;
-            margin: 0;
         }
 
-        /* العنوان الرئيسي */
-        .main-event-title {
+        /* عنوان الحدث */
+        .event-title {
+            flex: 0 1 auto;
+            font-size: calc(1.5rem + 1vw);
             color: var(--text-dark);
-            font-size: 3.5rem; /* حجم كبير جداً */
             font-weight: 900;
-            margin: 3vh 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            /* خط تحت العنوان */
-            position: relative;
-            display: inline-block;
-            align-self: center;
-        }
-        
-        .main-event-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--secondary-color);
-            border-radius: 2px;
+            text-align: center;
         }
 
-        /* تفاصيل الوقت والمكان - تصميم مفتوح */
+        /* تفاصيل الوقت والمكان */
         .info-row {
+            flex: 0 1 auto;
             display: flex;
             justify-content: center;
+            gap: 3vw;
+            width: 100%;
             flex-wrap: wrap;
-            gap: 25px;
-            margin-top: 3vh;
         }
-
         .info-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-            color: #444;
-            font-weight: 600;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.7); /* خلفية شفافة جداً */
+            background: var(--bg-light);
+            padding: 1rem 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
+            color: var(--text-dark);
+            font-weight: 600;
+            border: 1px solid rgba(79, 195, 195, 0.2);
         }
-        
-        .info-item:hover {
-             transform: translateY(-3px);
-             background: white;
-        }
-
         .info-item i {
             color: var(--secondary-color);
-            font-size: 1.3rem;
+            font-size: 1.4rem;
+            margin-left: 10px;
         }
 
-        /* --- منطقة التفاعل السفلية --- */
-        .bottom-action-area {
-            /* حجز ارتفاع ثابت في الأسفل لمنع اهتزاز التصميم */
-            min-height: 25vh; 
+        /* منطقة الزر التفاعلي */
+        .action-area {
+            flex: 0 0 15vh;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
             width: 100%;
         }
 
-        /* زر التدشين الدائري */
         .launch-btn {
-            background: linear-gradient(135deg, var(--primary-color), #094a4a);
-            color: white;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: var(--white);
             border: none;
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            font-size: 1.6rem;
-            font-weight: 700;
+            padding: 1.2rem 5rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            border-radius: 50px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 40px rgba(14, 102, 102, 0.3);
+            box-shadow: 0 10px 30px rgba(14, 102, 102, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            /* مسافة فوق الزر لفصله عن المحتوى */
-            margin-top: 20px;
+            text-decoration: none; /* في حال تم تحويله لرابط a مستقبلاً */
+        }
+        .launch-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(14, 102, 102, 0.5);
+        }
+        .launch-btn:active {
+            transform: scale(0.98);
         }
 
-        .launch-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 25px 50px rgba(14, 102, 102, 0.5); }
-        .launch-btn:active { transform: scale(0.95); }
-
-        /* --- حاوية رسالة النجاح --- */
-        .success-container {
-            display: none; /* مخفية افتراضياً */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            /* الشرط الحاسم: مسافة كبيرة فوق الرسالة لخلق الفراغ المطلوب بعد اختفاء الزر */
-            margin-top: 80px; 
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .check-icon {
-            font-size: 5rem;
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-        }
-
-        .redirect-text {
-            color: #666;
-            margin-top: 15px;
-            font-size: 1.2rem;
-        }
-
-        .countdown {
-            font-weight: 800;
-            color: var(--primary-color);
-            font-size: 1.4rem;
-            background: rgba(14, 102, 102, 0.1);
-            padding: 2px 12px;
-            border-radius: 6px;
-            margin: 0 5px;
-        }
-
-        /* --- Animations --- */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); } }
-
-        /* استجابة للشاشات القصيرة جداً */
-        @media (max-height: 650px) {
-            .content-wrapper { transform: scale(0.85); }
-        }
     </style>
 </head>
 <body>
 
-    <div class="content-wrapper">
-        <div class="naked-logo">
-            <img src="https://bayn.basirah.me/images/logo.PNG" alt="شعار بَيْن">
+    <div class="main-container">
+        
+        <div class="logo-section">
+            <img src="https://bayn.basirah.me/images/logo-black.PNG">
         </div>
 
-        <div class="text-content">
-            <div class="sponsor-section">
-                <p class="sponsor-title">تحت رعاية</p>
-                <h1 class="sponsor-name">المكرم الدكتور / عبدالله بن محمد الصارمي المحترم</h1>
-                <p class="sponsor-role">عضو مجلس الدولة</p>
-            </div>
-            
-            <h2 class="main-event-title">تدشين منصة بَيْن</h2>
+        <div class="sponsor-section">
+            <p class="sponsor-title">تحت رعاية</p>
+            <h1 class="sponsor-name">المكرم الدكتور / عبدالله بن محمد الصارمي المحترم</h1>
+            <p class="sponsor-role">عضو مجلس الدولة</p>
+        </div>
 
-            <div class="info-row">
-                <div class="info-item">
-                    <i class="far fa-calendar-alt"></i>
-                    <span>الإثنين، 22 ديسمبر 2025م</span>
-                </div>
-                <div class="info-item">
-                    <i class="far fa-clock"></i>
-                    <span>10:00 صباحًا</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>القاعة الرئيسة بجامعة الشرقية</span>
-                </div>
+        <h2 class="event-title">تدشين منصة بَيْن</h2>
+
+        <div class="info-row">
+            <div class="info-item">
+                <i class="far fa-calendar-alt"></i>
+                <span>الإثنين، 22 ديسمبر 2025م</span>
+            </div>
+            <div class="info-item">
+                <i class="far fa-clock"></i>
+                <span>10:00 صباحًا</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>القاعة الرئيسة بجامعة الشرقية</span>
             </div>
         </div>
 
-        <div class="bottom-action-area">
-            
-            <button class="launch-btn" id="launchBtn" onclick="startLaunch()">
-                تدشين المنصة
+        <div class="action-area">
+            <button class="launch-btn" onclick="window.location.href='/bayn-qr'">
+                تدشين 
             </button>
-
-            <div class="success-container" id="successMsg">
-                <i class="fas fa-check-circle check-icon"></i>
-                <h2 style="margin: 0; color: var(--primary-color); font-size: 2.2rem; font-weight: 800;">تم التدشين بنجاح</h2>
-                <p class="redirect-text">
-                    سيتم الانتقال للموقع خلال 
-                    <span class="countdown" id="timer">15</span> 
-                    ثانية
-                </p>
-            </div>
-
         </div>
     </div>
 
-    <script>
-        function startLaunch() {
-            const btn = document.getElementById('launchBtn');
-            const msgContainer = document.getElementById('successMsg');
-            const timerSpan = document.getElementById('timer');
-            let timeLeft = 15;
-
-            // إخفاء الزر
-            btn.style.display = 'none';
-            
-            // إظهار حاوية الرسالة (التي تحتوي على margin-top كبير لخلق الفراغ)
-            msgContainer.style.display = 'flex';
-
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                timerSpan.textContent = timeLeft;
-
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    window.location.href = "https://bayn.basirah.me";
-                }
-            }, 1000);
-        }
-    </script>
 </body>
 </html>
