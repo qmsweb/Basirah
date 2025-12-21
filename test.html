@@ -10,10 +10,10 @@
 
     <style>
         :root {
-            --primary-color: #0e6666; /* التيل الداكن - للعناوين والأزرار */
-            --secondary-color: #4fc3c3; /* الفيروزي الفاتح - للأيقونات والبريق */
-            --bg-light: #f4fbfb; /* خلفية فاتحة جداً */
-            --text-dark: #2c3e50; /* لون النص الأساسي */
+            --primary-color: #0e6666;
+            --secondary-color: #4fc3c3;
+            --bg-light: #f4fbfb;
+            --text-dark: #2c3e50;
             --white: #ffffff;
         }
 
@@ -25,9 +25,9 @@
         }
 
         body, html {
-            height: 100%; /* ضمان ملء الشاشة */
+            height: 100%;
             width: 100%;
-            overflow: hidden; /* منع التمرير نهائياً */
+            overflow: hidden;
             background-color: var(--bg-light);
             background-image: linear-gradient(135deg, var(--white) 0%, var(--bg-light) 100%);
             display: flex;
@@ -35,21 +35,19 @@
             align-items: center;
         }
 
-        /* الحاوية الرئيسية التي تجمع كل شيء */
         .main-container {
             background: var(--white);
             width: 90%;
             max-width: 1000px;
-            /* ارتفاع مرن يتكيف مع الشاشة لكن لا يتجاوز 90% منها */
             height: 90vh; 
             max-height: 800px; 
             border-radius: 25px;
             box-shadow: 0 15px 40px rgba(14, 102, 102, 0.08);
-            padding: 3vh 4vw; /* هوامش داخلية نسبية */
+            padding: 3vh 4vw;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* توزيع العناصر عمودياً بالتساوي */
+            justify-content: space-between;
             position: relative;
             border: 1px solid rgba(79, 195, 195, 0.1);
         }
@@ -60,7 +58,6 @@
             text-align: center;
         }
         .logo-section img {
-            /* ارتفاع نسبي ليتناسب مع مختلف الشاشات */
             height: auto;
             max-height: 10vh; 
             min-height: 60px;
@@ -82,7 +79,7 @@
         }
         .sponsor-name {
             color: var(--primary-color);
-            font-size: calc(1.2rem + 0.8vw); /* حجم خط متجاوب */
+            font-size: calc(1.2rem + 0.8vw);
             font-weight: 800;
             line-height: 1.3;
             margin-bottom: 0.5vh;
@@ -127,9 +124,9 @@
             margin-left: 10px;
         }
 
-        /* منطقة الزر التفاعلي - مهمة جداً */
+        /* منطقة الزر التفاعلي */
         .action-area {
-            flex: 0 0 15vh; /* حجز مساحة ثابتة للزر لضمان عدم اهتزاز التصميم */
+            flex: 0 0 15vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -149,10 +146,7 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
-        }
-        .launch-btn i {
-            margin-left: 15px;
-            font-size: 1.4rem;
+            text-decoration: none; /* في حال تم تحويله لرابط a مستقبلاً */
         }
         .launch-btn:hover {
             transform: translateY(-5px) scale(1.02);
@@ -162,54 +156,6 @@
             transform: scale(0.98);
         }
 
-        /* رسالة النجاح */
-        .success-container {
-            display: none; /* مخفية افتراضياً */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: slideUpFade 0.6s ease-out;
-            text-align: center;
-        }
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .success-icon-box {
-            width: 70px;
-            height: 70px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            box-shadow: 0 10px 20px rgba(79, 195, 195, 0.4);
-        }
-        .success-icon-box i {
-            color: var(--white);
-            font-size: 2.5rem;
-        }
-        .success-title {
-            color: var(--primary-color);
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-        .redirect-text {
-            color: var(--text-dark);
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-        .timer-badge {
-            background: var(--primary-color);
-            color: var(--white);
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-weight: 700;
-        }
-
     </style>
 </head>
 <body>
@@ -217,7 +163,7 @@
     <div class="main-container">
         
         <div class="logo-section">
-            <img src="https://bayn.basirah.me/images/logo-black.PNG" ">
+            <img src="https://bayn.basirah.me/images/logo-black.PNG">
         </div>
 
         <div class="sponsor-section">
@@ -244,49 +190,11 @@
         </div>
 
         <div class="action-area">
-            
-            <button class="launch-btn" id="launchBtn" onclick="startLaunch()">
+            <button class="launch-btn" onclick="window.location.href='/bayn-qr'">
                 تدشين 
             </button>
-
-            <div class="success-container" id="successMsg">
-                <div class="success-icon-box">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h2 class="success-title">تم التدشين بنجاح</h2>
-                <p class="redirect-text">
-                    جاري الانتقال... 
-                    <span class="timer-badge" id="timer">5</span> 
-                </p>
-            </div>
-
         </div>
     </div>
 
-    <script>
-        function startLaunch() {
-            const btn = document.getElementById('launchBtn');
-            const msgContainer = document.getElementById('successMsg');
-            const timerSpan = document.getElementById('timer');
-            
-            // مدة الانتظار قبل التحويل (5 ثواني مناسبة للحفل)
-            let timeLeft = 5;
-
-            // إخفاء الزر وإظهار رسالة النجاح بسلاسة
-            btn.style.display = 'none';
-            msgContainer.style.display = 'flex';
-
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                timerSpan.textContent = timeLeft;
-
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    // الانتقال للصفحة المطلوبة
-                    window.location.href = "/bayn-qr";
-                }
-            }, 1000);
-        }
-    </script>
 </body>
 </html>
