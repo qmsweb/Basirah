@@ -3,304 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بصيرة للخدمات الرقمية</title>
+    <title>بصيرة للخدمات الرقمية | Basirah Digital</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-glow: #4f46e580;
+            --secondary: #0ea5e9;
+            --dark-bg: #0f172a;
+            --darker-bg: #020617;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            outline: none;
         }
-        
+
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0c1a2d 0%, #1a3a5f 100%);
-            color: white;
+            background-color: var(--darker-bg);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15) 0%, transparent 25%);
+            color: var(--text-main);
             min-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        
-        .container {
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-            z-index: 10;
-            position: relative;
-            max-width: 800px;
         }
-        
-        .logo-container {
-            margin-bottom: 2.5rem;
-            padding: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .logo {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 3px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .logo img {
-            width: 75%;
-            height: 75%;
-            object-fit: contain;
-            filter: brightness(1.2);
-        }
-        
-        .coming-soon {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.8);
-            max-width: 600px;
-            line-height: 1.6;
-        }
-        
-        /* دوائر الضباب المتحركة */
-        .circles {
-            position: absolute;
+
+        /* الخلفية المتحركة (الشبكة) */
+        .grid-bg {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            z-index: 1;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            mask-image: radial-gradient(circleAt center, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
-        
-        .circle {
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* الرأس */
+        header {
+            padding: 2rem;
             position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(32, 156, 255, 0.3) 0%, rgba(32, 156, 255, 0.1) 70%, transparent 100%);
-            filter: blur(40px);
-            opacity: 0.7;
-            animation: float 15s infinite linear;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
         }
-        
-        .circle:nth-child(1) {
-            width: 400px;
-            height: 400px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 20s;
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .circle:nth-child(2) {
-            width: 350px;
-            height: 350px;
-            top: 60%;
-            right: 15%;
-            animation-delay: -5s;
-            animation-duration: 25s;
+
+        .logo span {
+            color: var(--secondary);
         }
-        
-        .circle:nth-child(3) {
+
+        /* التخطيط الرئيسي */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 6rem 0;
+            width: 100%;
+        }
+
+        /* المحتوى النصي */
+        .content {
+            z-index: 2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.description {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        /* نموذج التسجيل */
+        .notify-form {
+            background: var(--glass);
+            padding: 0.5rem;
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            max-width: 450px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .notify-form input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+        }
+
+        .notify-form input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .notify-form button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .notify-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+
+        /* قسم الهاتف (Visual) */
+        .visual-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* تأثير التوهج خلف الهاتف */
+        .glow-bg {
+            position: absolute;
             width: 300px;
             height: 300px;
-            bottom: 10%;
-            left: 20%;
-            animation-delay: -10s;
-            animation-duration: 18s;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse 4s infinite alternate;
+        }
+
+        /* تصميم الهاتف بـ CSS */
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background: #000;
+            border-radius: 45px;
+            padding: 12px;
+            border: 8px solid #2a2a2a;
+            box-shadow: 
+                0 0 0 2px #444,
+                0 30px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            transform: rotate(-10deg) translateY(0);
+            animation: float 6s ease-in-out infinite;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .phone-screen {
+            background: var(--dark-bg);
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الجزيرة الديناميكية (Notch) */
+        .dynamic-island {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 25px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 20;
+        }
+
+        /* واجهة التطبيق داخل الهاتف */
+        .app-header {
+            padding: 60px 20px 20px;
+            background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, transparent 100%);
+        }
+
+        .app-title {
+            height: 20px;
+            width: 60%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .app-subtitle {
+            height: 12px;
+            width: 40%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .app-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0.8;
+        }
+
+        .card-lines {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .line {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .w-80 { width: 80%; }
+        .w-50 { width: 50%; }
+
+        .app-chart {
+            margin-top: auto;
+            height: 150px;
+            background: linear-gradient(180deg, transparent, rgba(79, 70, 229, 0.1));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
         }
         
-        .circle:nth-child(4) {
-            width: 450px;
-            height: 450px;
-            top: 20%;
-            right: 5%;
-            animation-delay: -15s;
-            animation-duration: 30s;
+        /* تذييل الصفحة */
+        footer {
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
         }
-        
-        .circle:nth-child(5) {
-            width: 250px;
-            height: 250px;
-            bottom: 20%;
-            right: 30%;
-            animation-delay: -8s;
-            animation-duration: 22s;
-        }
-        
+
+        /* الأنيميشن */
         @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            33% {
-                transform: translate(30px, -50px) rotate(120deg);
-            }
-            66% {
-                transform: translate(-20px, 40px) rotate(240deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
+            0% { transform: rotate(-10deg) translateY(0px); }
+            50% { transform: rotate(-10deg) translateY(-20px); }
+            100% { transform: rotate(-10deg) translateY(0px); }
         }
-        
-        /* تأثيرات إضافية */
-        .pulse {
-            animation: pulse 2.5s infinite;
-        }
-        
+
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(32, 156, 255, 0.4);
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* الاستجابة للشاشات */
+        @media (max-width: 992px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
+                padding-top: 8rem;
             }
-            70% {
-                box-shadow: 0 0 0 20px rgba(32, 156, 255, 0);
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
-            100% {
-                box-shadow: 0 0 0 0 rgba(32, 156, 255, 0);
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .phone-mockup {
+                width: 260px;
+                height: 520px;
+                transform: rotate(0deg);
+                animation: float-mobile 6s ease-in-out infinite;
+            }
+            
+            @keyframes float-mobile {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+                100% { transform: translateY(0px); }
             }
         }
-        
-        /* التكيف مع الشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .logo {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .coming-soon {
-                font-size: 2.8rem;
-            }
-            
-            .subtitle {
-                font-size: 1.2rem;
-                padding: 0 1rem;
-            }
-            
-            .circle {
-                filter: blur(30px);
-            }
-            
-            .circle:nth-child(1),
-            .circle:nth-child(2),
-            .circle:nth-child(3),
-            .circle:nth-child(4),
-            .circle:nth-child(5) {
-                width: 250px;
-                height: 250px;
-            }
-        }
-        
+
         @media (max-width: 480px) {
-            .logo {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .coming-soon {
-                font-size: 2.2rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
+            h1 { font-size: 2.2rem; }
+            .logo { font-size: 1.4rem; }
+            .notify-form { padding: 0.3rem; }
+            .notify-form button { padding: 0.6rem 1.2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- دوائر الضباب المتحركة -->
-    <div class="circles">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-    </div>
     
-    <!-- المحتوى الرئيسي -->
-    <div class="container">
-        <div class="logo-container">
-            <div class="logo pulse">
-                <!-- إذا كان ملف logo.png موجود في نفس المجلد -->
-                <img src="basirah-logo.png" alt="شعار الموقع" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiByeD0iMTAwIiBmaWxsPSIjMjA5Q0ZGIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8cGF0aCBkPSJNMTQwIDcwTDYwIDEzMEw4MCAxNzBMMTIwIDE3MEwxNDAgMTMwTDEyMCA5MEw4MCA5MEw2MCA3MEgxNDBaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNjAgNzBMMTAwIDMwTDE0MCA3MEwxMjAgOTBMODAgOTBMNjAgNzBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjciLz4KPC9zdmc+'">
-            </div>
-            <h1 class="coming-soon">قريبًا</h1>
-        </div>
+    <div class="grid-bg"></div>
 
-        
+    <header>
+        <div class="container">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="6" fill="#4F46E5" fill-opacity="0.2"/>
+                    <path d="M12 7V17M12 17L8 13M12 17L16 13" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                بصيرة <span>للخدمات الرقمية</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero-section">
+            <div class="content">
+                <div class="badge">قريبًا ننطلق 🚀</div>
+                <h1>نبتكر المستقبل الرقمي<br>بلمسة ذكية.</h1>
+                <p class="description">
+                    نعمل حاليًا على بناء تجربة رقمية استثنائية. منصة متكاملة للخدمات الرقمية تجمع بين الإبداع والتكنولوجيا. كن أول من يعلم عند الإطلاق.
+                </p>
+
+                <form class="notify-form" onsubmit="event.preventDefault(); alert('شكرًا لاهتمامك! تم تسجيل بريدك بنجاح.');">
+                    <input type="email" placeholder="أدخل بريدك الإلكتروني..." required>
+                    <button type="submit">أعلمني</button>
+                </form>
+            </div>
+
+            <div class="visual-container">
+                <div class="glow-bg"></div>
+                <div class="phone-mockup">
+                    <div class="dynamic-island"></div>
+                    <div class="phone-screen">
+                        <div class="app-header">
+                            <div class="app-title"></div>
+                            <div class="app-subtitle"></div>
+                        </div>
+                        <div class="app-body">
+                            <div class="app-card">
+                                <div class="card-icon"></div>
+                                <div class="card-lines">
+                                    <div class="line w-80"></div>
+                                    <div class="line w-50"></div>
+                                </div>
+                            </div>
+                            <div class="app-card" style="opacity: 0.7;">
+                                <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #3b82f6);"></div>
+                                <div class="card-lines">
+                                    <div class="line w-80"></div>
+                                    <div class="line w-50"></div>
+                                </div>
+                            </div>
+                            <div class="app-card" style="opacity: 0.4;">
+                                <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);"></div>
+                                <div class="card-lines">
+                                    <div class="line w-80"></div>
+                                    <div class="line w-50"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-chart">
+                            <svg viewBox="0 0 100 50" width="100%" height="100%" preserveAspectRatio="none" style="position: absolute; bottom: 0;">
+                                <path d="M0 50 L20 30 L40 40 L60 20 L80 35 L100 10 V50 H0 Z" fill="url(#gradient)" opacity="0.5"/>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:0.6" />
+                                        <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <footer>
+        <p>© 2026 بصيرة للخدمات الرقمية. جميع الحقوق محفوظة.</p>
+    </footer>
 
     <script>
-        // إضافة تأثيرات تفاعلية بسيطة للصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            const logo = document.querySelector('.logo');
+        // تأثير حركي بسيط عند التحميل
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.querySelector('.content');
+            const visual = document.querySelector('.visual-container');
             
-            // تأثير عند مرور الماوس على الشعار
-            logo.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.05)';
-                this.style.transition = 'transform 0.3s ease';
-            });
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(20px)';
+            content.style.transition = 'all 1s ease';
             
-            logo.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
-            
-            // رسالة تحميل إذا لم يتم العثور على الصورة
-            const logoImg = document.querySelector('.logo img');
-            logoImg.addEventListener('error', function() {
-                // إذا فشل تحميل الصورة، نعرض رسالة بديلة
-                const logoContainer = document.querySelector('.logo');
-                logoContainer.innerHTML = '<span style="font-size: 3rem; font-weight: bold; color: white;">LOGO</span>';
-                logoContainer.style.display = 'flex';
-                logoContainer.style.alignItems = 'center';
-                logoContainer.style.justifyContent = 'center';
-            });
-            
-            // تحريك الدوائر بشكل عشوائي أكثر
-            const circles = document.querySelectorAll('.circle');
-            circles.forEach((circle, index) => {
-                // تأخيرات عشوائية للحركة
-                const delay = Math.random() * -20;
-                const duration = 15 + Math.random() * 15;
+            visual.style.opacity = '0';
+            visual.style.transform = 'translateY(20px)';
+            visual.style.transition = 'all 1s ease 0.3s'; // تأخير بسيط للصورة
+
+            setTimeout(() => {
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
                 
-                circle.style.animationDelay = `${delay}s`;
-                circle.style.animationDuration = `${duration}s`;
-                
-                // ألوان زرقاء متنوعة
-                const blueShades = [
-                    'rgba(32, 156, 255, 0.3)',
-                    'rgba(0, 122, 255, 0.25)',
-                    'rgba(52, 152, 219, 0.3)',
-                    'rgba(41, 128, 185, 0.25)',
-                    'rgba(30, 100, 200, 0.3)'
-                ];
-                
-                const randomColor = blueShades[Math.floor(Math.random() * blueShades.length)];
-                circle.style.background = `radial-gradient(circle, ${randomColor} 0%, rgba(32, 156, 255, 0.1) 70%, transparent 100%)`;
-            });
+                visual.style.opacity = '1';
+                // نحذف التحويل للصورة هنا حتى لا يتعارض مع أنيميشن الطفو (float)
+                setTimeout(() => {
+                     visual.style.transform = '';
+                }, 1000);
+            }, 100);
         });
     </script>
 </body>
