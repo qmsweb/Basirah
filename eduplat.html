@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الإدارة الإلكترونية</title>
+    <title>الأرشيف الإلكتروني الشجري</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,13 +13,11 @@
         :root {
             --bg-body: #f8f9fa;
             --surface-color: #ffffff;
-            --primary-color: #2563eb; /* أزرق رسمي */
-            --primary-dark: #1e40af;
+            --primary-color: #2563eb;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --folder-color: #fbbf24; /* لون المجلدات */
         }
 
         body {
@@ -31,7 +29,7 @@
             min-height: 100vh;
         }
 
-        /* --- الشريط العلوي الرسمي --- */
+        /* --- الشريط العلوي --- */
         .main-header {
             background-color: var(--surface-color);
             border-bottom: 1px solid var(--border-color);
@@ -39,161 +37,162 @@
             height: 70px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .brand-text h1 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             margin: 0;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
+            color: var(--primary-color);
         }
 
-        /* --- المحتوى الرئيسي --- */
+        /* --- حاوية الشجرة --- */
         .container { 
             max-width: 900px; 
             margin: 40px auto; 
             padding: 0 20px; 
         }
 
-        .file-list { list-style: none; padding: 0; display: grid; gap: 16px; }
-
-        .file-card {
+        .tree-container {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-            overflow: hidden;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
-        .file-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+        /* --- تنسيقات الشجرة (Tree CSS) --- */
+        ul.tree-list {
+            list-style: none;
+            padding-right: 20px; /* إزاحة لليمين للعربية */
+            margin: 0;
         }
 
-        /* شريط جانبي ملون */
-        .file-card::before {
-            content: '';
-            position: absolute;
-            right: 0; top: 0; bottom: 0; width: 4px;
-            background-color: var(--primary-color);
-            opacity: 0.5;
-        }
-        
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-left: 16px;
-            flex-shrink: 0;
-            background-color: #eff6ff; 
-            color: var(--primary-color);
+        /* مستوى الجذر لا يحتاج إزاحة كبيرة */
+        ul.tree-list.root {
+            padding-right: 0;
         }
 
-        .file-info { flex-grow: 1; }
-        
-        .file-name { 
-            font-weight: 700; 
-            font-size: 16px; 
+        .tree-item {
+            margin: 8px 0;
+        }
+
+        /* تنسيق المجلدات القابلة للطي */
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 0; /* تم إلغاء الهامش السفلي لعدم وجود عناصر تحته */
-            display: block; 
-        }
-
-        /* تم حذف كلاسات البادج من هنا (.file-meta-badges, .badge) */
-
-        .download-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            background-color: #f8fafc;
+            border: 1px solid transparent;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            background-color: #f8fafc;
-            border: 1px solid var(--border-color);
             transition: 0.2s;
         }
 
-        .file-card:hover .download-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+        details > summary:hover {
+            background-color: #eff6ff;
+            border-color: #dbeafe;
+        }
+
+        /* إخفاء سهم المتصفح الافتراضي */
+        details > summary::-webkit-details-marker { display: none; }
+
+        /* أيقونة المجلد */
+        .folder-icon {
+            color: var(--folder-color);
+            margin-left: 10px;
+            font-size: 1.2em;
+            transition: 0.2s;
+        }
+
+        /* تغيير أيقونة المجلد عند الفتح */
+        details[open] > summary .folder-icon {
+            transform: rotate(0deg); /* يمكن إضافة تدوير بسيط إذا رغبت */
+        }
+        
+        details[open] > summary .fa-folder::before {
+            content: "\f07c"; /* تبديل أيقونة folder إلى folder-open */
+        }
+
+        /* تنسيق الملفات */
+        .file-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .file-link:hover {
+            background-color: #f1f5f9;
+            border-color: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .file-icon {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .file-link:hover .file-icon {
+            color: var(--primary-color);
+        }
+
+        /* خطوط الربط الشجرية (اختياري لجمالية أكثر) */
+        .tree-list {
+            position: relative;
         }
 
         /* رسائل الحالة */
-        .status-msg { 
-            text-align: center; 
-            padding: 60px 20px; 
-            color: var(--text-secondary);
-            background: white;
-            border-radius: 12px;
-            border: 1px dashed var(--border-color);
-        }
-        
+        .status-msg { text-align: center; padding: 40px; color: var(--text-secondary); }
         .error-msg { 
-            background-color: #fef2f2; 
-            color: #991b1b; 
-            padding: 16px; 
-            border-radius: 8px; 
-            border: 1px solid #fecaca;
-            text-align: right;
-            margin-bottom: 10px;
+            background-color: #fef2f2; color: #991b1b; padding: 15px; 
+            border-radius: 8px; border: 1px solid #fecaca; text-align: right; 
         }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="brand-logo">
-            <div class="brand-text">
-                <h1>الإدارة الإلكترونية</h1>
-            </div>
+        <div class="brand-text">
+            <h1><i class="fas fa-sitemap"></i> الأرشيف الإلكتروني</h1>
         </div>
     </header>
 
     <div class="container">
-        <ul class="file-list" id="fileListContainer">
-            <li class="status-msg">
+        <div id="treeWrapper" class="tree-container">
+            <div class="status-msg">
                 <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary-color);"></i>
-                <br><br>جاري تحميل البيانات...
-            </li>
-        </ul>
+                <br><br>جاري بناء الهيكل الشجري...
+            </div>
+        </div>
     </div>
 
     <script>
+        // دالة عرض الأخطاء
         function showError(message, detail) {
-            const listContainer = document.getElementById('fileListContainer');
-            listContainer.innerHTML = `
-                <li class="error-msg">
-                    <div style="font-weight:bold; margin-bottom:5px;"><i class="fas fa-exclamation-triangle"></i> حدث خطأ</div>
+            const wrapper = document.getElementById('treeWrapper');
+            wrapper.innerHTML = `
+                <div class="error-msg">
+                    <div style="font-weight:bold;"><i class="fas fa-exclamation-triangle"></i> حدث خطأ</div>
                     ${message}
-                    <div style="font-size:0.85em; opacity:0.8; margin-top:5px; direction:ltr; text-align:left;">${detail}</div>
-                </li>
-            `;
+                    <div style="font-size:0.85em; opacity:0.8; margin-top:5px; direction:ltr;">${detail || ''}</div>
+                </div>`;
         }
 
+        // إعداد Supabase
         if (typeof window.supabase === 'undefined') {
             showError("لم يتم تحميل مكتبة Supabase", "Check Internet Connection");
         } else {
@@ -203,80 +202,130 @@
             try {
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+                // دالة تحديد أيقونة الملف
                 function getFileIcon(filename) {
-                    if (!filename) return 'fa-file';
                     const ext = filename.split('.').pop().toLowerCase();
                     if (['pdf'].includes(ext)) return 'fa-file-pdf';
                     if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
                     if (['xls', 'xlsx'].includes(ext)) return 'fa-file-excel';
                     if (['jpg', 'png', 'jpeg'].includes(ext)) return 'fa-file-image';
                     if (['zip', 'rar'].includes(ext)) return 'fa-file-zipper';
-                    return 'fa-file';
+                    return 'fa-file'; // افتراضي
                 }
 
-                async function loadFiles() {
-                    const listContainer = document.getElementById('fileListContainer');
+                // --- المنطق الشجري ---
+                
+                // 1. تحويل القائمة المسطحة إلى هيكل شجري
+                function buildHierarchy(files) {
+                    const root = {};
+
+                    files.forEach(file => {
+                        // نفترض أن المسار مفصول بـ / في اسم الملف
+                        // مثال: "الإدارة/المالية/تقرير.pdf"
+                        // إذا لم يكن هناك / سيعتبر في المجلد الرئيسي
+                        const parts = (file.name || 'بدون اسم').split('/');
+                        const fileName = parts.pop(); // آخر جزء هو اسم الملف
+                        let currentLevel = root;
+
+                        parts.forEach(folderName => {
+                            if (!currentLevel[folderName]) {
+                                currentLevel[folderName] = { __type: 'folder', __children: {} };
+                            }
+                            currentLevel = currentLevel[folderName].__children;
+                        });
+
+                        // إضافة الملف في المستوى الحالي
+                        if (!currentLevel['__files']) {
+                            currentLevel['__files'] = [];
+                        }
+                        currentLevel['__files'].push({ ...file, displayName: fileName });
+                    });
+
+                    return root;
+                }
+
+                // 2. دالة توليد HTML بشكل تكراري (Recursive)
+                function renderTreeHTML(node, isRoot = false) {
+                    let html = `<ul class="tree-list ${isRoot ? 'root' : ''}">`;
+
+                    // أولاً: عرض المجلدات
+                    for (const key in node) {
+                        if (key === '__files') continue; // تخطي مصفوفة الملفات حالياً
+
+                        const folder = node[key];
+                        if (folder.__type === 'folder') {
+                            html += `
+                                <li class="tree-item">
+                                    <details open> <summary>
+                                            <i class="fas fa-folder folder-icon"></i>
+                                            ${key}
+                                        </summary>
+                                        ${renderTreeHTML(folder.__children)}
+                                    </details>
+                                </li>
+                            `;
+                        }
+                    }
+
+                    // ثانياً: عرض الملفات في هذا المستوى
+                    if (node['__files']) {
+                        node['__files'].forEach(file => {
+                            const icon = getFileIcon(file.name);
+                            const url = file.file_url || '#';
+                            html += `
+                                <li class="tree-item">
+                                    <a href="${url}" target="_blank" class="file-link">
+                                        <i class="far ${icon} file-icon"></i>
+                                        <span>${file.displayName}</span>
+                                    </a>
+                                </li>
+                            `;
+                        });
+                    }
+
+                    html += `</ul>`;
+                    return html;
+                }
+
+                // التحميل الرئيسي
+                async function loadFilesAsTree() {
+                    const wrapper = document.getElementById('treeWrapper');
 
                     try {
                         let { data: files, error } = await supabase
                             .from('files')
                             .select('*')
-                            .order('created_at', { ascending: false });
+                            .order('name', { ascending: true }); // ترتيب أبجدي مهم للشجرة
 
                         if (error) throw error;
 
-                        listContainer.innerHTML = '';
+                        wrapper.innerHTML = '';
 
                         if (!files || files.length === 0) {
-                            listContainer.innerHTML = `
-                                <li class="status-msg">
-                                    <i class="far fa-folder-open fa-3x" style="color:#cbd5e1; margin-bottom:15px"></i>
-                                    <div>لا توجد ملفات لعرضها حالياً</div>
-                                </li>`;
+                            wrapper.innerHTML = `<div class="status-msg">لا توجد ملفات لعرضها</div>`;
                             return;
                         }
 
-                        files.forEach(file => {
-                            const iconClass = getFileIcon(file.name);
-                            const url = file.file_url || '#';
-                            // تم حذف المتغيرات الخاصة بالتاريخ والامتداد لعدم الحاجة إليها بعد حذف البادج
-
-                            const htmlItem = `
-                                <li>
-                                    <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">
-                                        <div class="file-card">
-                                            
-                                            <div class="icon-box">
-                                                <i class="fas ${iconClass}"></i>
-                                            </div>
-                                            
-                                            <div class="file-info">
-                                                <span class="file-name">${file.name || 'ملف بدون اسم'}</span>
-                                                </div>
-
-                                            <div class="download-btn">
-                                                <i class="fas fa-cloud-arrow-down"></i>
-                                            </div>
-
-                                        </div>
-                                    </a>
-                                </li>
-                            `;
-                            listContainer.innerHTML += htmlItem;
-                        });
+                        // بناء الشجرة
+                        const treeData = buildHierarchy(files);
+                        
+                        // توليد HTML
+                        const treeHTML = renderTreeHTML(treeData, true);
+                        
+                        wrapper.innerHTML = treeHTML;
 
                     } catch (err) {
                         console.error("Error:", err);
-                        showError("فشل الاتصال بقاعدة البيانات", err.message);
+                        showError("فشل جلب البيانات", err.message);
                     }
                 }
 
-                loadFiles();
+                loadFilesAsTree();
 
             } catch (setupError) {
-                showError("خطأ في التهيئة", setupError.message);
+                showError("خطأ في تهيئة التطبيق", setupError.message);
             }
         }
     </script>
 </body>
-</html>
+</html> 
