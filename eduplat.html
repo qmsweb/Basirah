@@ -6,9 +6,7 @@
     <title>مكتبة الملفات</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -28,39 +26,11 @@
             color: var(--text-primary);
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header h2 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-        }
-
-        /* تنسيق قائمة الملفات */
-        .file-list {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            gap: 15px; /* مسافة بين العناصر */
-        }
-
-        .file-item-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h2 { font-size: 28px; color: #333; margin-bottom: 10px; }
+        .file-list { list-style: none; padding: 0; display: grid; gap: 15px; }
+        .file-item-link { text-decoration: none; color: inherit; display: block; }
 
         .file-card {
             background: var(--card-bg);
@@ -73,84 +43,32 @@
             transition: all 0.3s ease;
         }
 
-        .file-card:hover {
-            transform: translateY(-3px); /* يرتفع للأعلى قليلاً */
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            border-color: #e1e4e8;
-        }
+        .file-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .icon-box { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-left: 20px; flex-shrink: 0; }
+        .file-info { flex-grow: 1; }
+        .file-name { font-weight: 700; font-size: 16px; margin-bottom: 5px; display: block; }
+        .file-meta { font-size: 13px; color: var(--text-secondary); display: flex; gap: 15px; }
+        .action-icon { color: var(--text-secondary); opacity: 0.5; transition: 0.3s; }
+        .file-card:hover .action-icon { opacity: 1; color: var(--primary-color); }
 
-        /* مربع الأيقونة */
-        .icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-left: 20px;
-            flex-shrink: 0;
-        }
-
-        /* معلومات الملف */
-        .file-info {
-            flex-grow: 1;
-        }
-
-        .file-name {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 5px;
-            display: block;
-            word-break: break-all; /* لكسر الأسماء الطويلة جداً */
-        }
-
-        .file-meta {
-            font-size: 13px;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 15px;
-        }
-
-        /* زر التحميل الجانبي */
-        .action-icon {
-            color: var(--text-secondary);
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-
-        .file-card:hover .action-icon {
-            opacity: 1;
-            color: var(--primary-color);
-        }
-
-        /* --- ألوان الأيقونات حسب النوع --- */
-        
-        /* PDF - أحمر */
+        /* ألوان */
         .type-pdf { background-color: #fadbd8; color: #e74c3c; }
-        
-        /* Word - أزرق */
         .type-doc { background-color: #d6eaf8; color: #2980b9; }
-        
-        /* Excel - أخضر */
         .type-xls { background-color: #d5f5e3; color: #27ae60; }
-        
-        /* Images - بنفسجي */
         .type-img { background-color: #ebdef0; color: #8e44ad; }
-        
-        /* Zip - برتقالي */
         .type-zip { background-color: #fdebd0; color: #d35400; }
-        
-        /* Code/Default - رمادي */
         .type-default { background-color: #eceff1; color: #607d8b; }
 
-        /* رسالة التحميل */
-        .status-msg {
+        /* رسائل الحالة */
+        .status-msg { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .error-msg { 
+            background-color: #fee2e2; 
+            color: #b91c1c; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #fca5a5;
             text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
         }
-
     </style>
 </head>
 <body>
@@ -158,120 +76,126 @@
     <div class="container">
         <div class="header">
             <h2><i class="fas fa-folder-open" style="color: #4a90e2;"></i> الملفات المتاحة</h2>
-            <p>تصفح وحمل الملفات من القائمة أدناه</p>
+            <p id="statusText">جاري الاتصال بقاعدة البيانات...</p>
         </div>
 
         <ul class="file-list" id="fileListContainer">
             <li class="status-msg">
                 <i class="fas fa-circle-notch fa-spin fa-2x"></i>
-                <br><br>جاري تحميل الملفات...
+                <br><br>جاري التحميل...
             </li>
         </ul>
     </div>
 
     <script>
-        // 1. إعداد Supabase
-        const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // 2. دالة ذكية لتحديد شكل الأيقونة ولونها بناءً على الامتداد
-        function getFileStyle(filename) {
-            if (!filename) return { icon: 'fa-file', class: 'type-default', label: 'ملف' };
+        // دالة لعرض الخطأ بوضوح للمستخدم
+        function showError(message, detail) {
+            const listContainer = document.getElementById('fileListContainer');
+            const statusText = document.getElementById('statusText');
             
-            const ext = filename.split('.').pop().toLowerCase();
+            statusText.innerText = "حدث خطأ";
+            statusText.style.color = "red";
 
-            // قاموس الامتدادات
-            if (['pdf'].includes(ext)) {
-                return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'ملف PDF' };
-            }
-            if (['doc', 'docx'].includes(ext)) {
-                return { icon: 'fa-file-word', class: 'type-doc', label: 'مستند Word' };
-            }
-            if (['xls', 'xlsx', 'csv'].includes(ext)) {
-                return { icon: 'fa-file-excel', class: 'type-xls', label: 'جدول Excel' };
-            }
-            if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) {
-                return { icon: 'fa-file-image', class: 'type-img', label: 'صورة' };
-            }
-            if (['zip', 'rar', '7z'].includes(ext)) {
-                return { icon: 'fa-file-zipper', class: 'type-zip', label: 'ملف مضغوط' };
-            }
-            
-            // الافتراضي
-            return { icon: 'fa-file', class: 'type-default', label: ext.toUpperCase() + ' ملف' };
+            listContainer.innerHTML = `
+                <li class="error-msg">
+                    <strong><i class="fas fa-bug"></i> خطأ تقني:</strong><br>
+                    ${message}<br><br>
+                    <small style="direction:ltr; display:block; text-align:left;">${detail}</small>
+                </li>
+            `;
         }
 
-        // 3. جلب البيانات وعرضها
-        async function loadFiles() {
-            const listContainer = document.getElementById('fileListContainer');
+        // 1. التأكد من تحميل المكتبة
+        if (typeof window.supabase === 'undefined') {
+            showError("لم يتم تحميل مكتبة Supabase", "Check your internet connection or CDN link.");
+        } else {
+
+            // 2. إعداد الاتصال
+            const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
 
             try {
-                let { data: files, error } = await supabase
-                    .from('files')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                if (error) throw error;
-
-                listContainer.innerHTML = ''; // مسح رسالة التحميل
-
-                if (files.length === 0) {
-                    listContainer.innerHTML = '<li class="status-msg">لا توجد ملفات حالياً.</li>';
-                    return;
+                function getFileStyle(filename) {
+                    if (!filename) return { icon: 'fa-file', class: 'type-default', label: 'ملف' };
+                    const ext = filename.split('.').pop().toLowerCase();
+                    if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'ملف PDF' };
+                    if (['doc', 'docx'].includes(ext)) return { icon: 'fa-file-word', class: 'type-doc', label: 'Word' };
+                    if (['xls', 'xlsx'].includes(ext)) return { icon: 'fa-file-excel', class: 'type-xls', label: 'Excel' };
+                    if (['jpg', 'png', 'jpeg'].includes(ext)) return { icon: 'fa-file-image', class: 'type-img', label: 'صورة' };
+                    if (['zip', 'rar'].includes(ext)) return { icon: 'fa-file-zipper', class: 'type-zip', label: 'مضغوط' };
+                    return { icon: 'fa-file', class: 'type-default', label: ext.toUpperCase() };
                 }
 
-                files.forEach(file => {
-                    // استخراج النمط المناسب للملف
-                    const style = getFileStyle(file.name);
-                    
-                    // تنسيق التاريخ
-                    const date = new Date(file.created_at).toLocaleDateString('ar-EG');
-                    
-                    // الرابط
-                    const url = file.file_url || '#';
+                async function loadFiles() {
+                    const listContainer = document.getElementById('fileListContainer');
+                    const statusText = document.getElementById('statusText');
 
-                    // إنشاء عنصر القائمة بتصميم البطاقة الجديد
-                    const htmlItem = `
-                        <li>
-                            <a href="${url}" target="_blank" class="file-item-link">
-                                <div class="file-card">
-                                    <div class="icon-box ${style.class}">
-                                        <i class="fas ${style.icon}"></i>
-                                    </div>
-                                    
-                                    <div class="file-info">
-                                        <span class="file-name">${file.name}</span>
-                                        <div class="file-meta">
-                                            <span><i class="far fa-file"></i> ${style.label}</span>
-                                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                    try {
+                        console.log("Start fetching..."); // للتجربة في الكونسول
+
+                        // جلب البيانات
+                        let { data: files, error } = await supabase
+                            .from('files')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+
+                        if (error) throw error;
+
+                        console.log("Data fetched:", files); // للتجربة في الكونسول
+
+                        listContainer.innerHTML = ''; 
+                        statusText.innerText = "تصفح وحمل الملفات من القائمة أدناه";
+
+                        if (!files || files.length === 0) {
+                            listContainer.innerHTML = '<li class="status-msg">الجدول فارغ، لا توجد ملفات.</li>';
+                            return;
+                        }
+
+                        files.forEach(file => {
+                            const style = getFileStyle(file.name);
+                            // حماية ضد التواريخ الفارغة
+                            const date = file.created_at ? new Date(file.created_at).toLocaleDateString('ar-EG') : 'بدون تاريخ';
+                            const url = file.file_url || '#';
+
+                            const htmlItem = `
+                                <li>
+                                    <a href="${url}" target="_blank" class="file-item-link">
+                                        <div class="file-card">
+                                            <div class="icon-box ${style.class}">
+                                                <i class="fas ${style.icon}"></i>
+                                            </div>
+                                            <div class="file-info">
+                                                <span class="file-name">${file.name || 'بدون اسم'}</span>
+                                                <div class="file-meta">
+                                                    <span><i class="far fa-file"></i> ${style.label}</span>
+                                                    <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                                                </div>
+                                            </div>
+                                            <div class="action-icon">
+                                                <i class="fas fa-download"></i>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
+                                </li>
+                            `;
+                            listContainer.innerHTML += htmlItem;
+                        });
 
-                                    <div class="action-icon">
-                                        <i class="fas fa-download"></i>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    `;
-                    
-                    listContainer.innerHTML += htmlItem;
-                });
+                    } catch (err) {
+                        console.error("Error caught:", err);
+                        showError("فشل في جلب البيانات من السيرفر", err.message || JSON.stringify(err));
+                    }
+                }
 
-            } catch (err) {
-                console.error(err);
-                listContainer.innerHTML = `
-                    <li class="status-msg" style="color: #e74c3c;">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i><br><br>
-                        حدث خطأ أثناء تحميل البيانات
-                    </li>`;
+                // تشغيل الدالة
+                loadFiles();
+
+            } catch (setupError) {
+                showError("خطأ في إعداد Supabase", setupError.message);
             }
         }
-
-        // تشغيل الدالة
-        loadFiles();
     </script>
 </body>
 </html>
