@@ -3,86 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتبة الملفات</title>
+    <title>بصيرة | إدارة الملفات</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --primary-color: #4a90e2;
-            --text-primary: #2c3e50;
-            --text-secondary: #7f8c8d;
+            --bg-body: #f8f9fa;
+            --surface-color: #ffffff;
+            --primary-color: #2563eb; /* أزرق رسمي */
+            --primary-dark: #1e40af;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-body);
             margin: 0;
-            padding: 40px 20px;
+            padding: 0;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* --- الشريط العلوي الرسمي --- */
+        .main-header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
             color: var(--text-primary);
         }
 
-        .container { max-width: 800px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h2 { font-size: 28px; color: #333; margin-bottom: 10px; }
-        .file-list { list-style: none; padding: 0; display: grid; gap: 15px; }
-        .file-item-link { text-decoration: none; color: inherit; display: block; }
-
-        .file-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px 20px;
+        .brand-icon-bg {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
         }
 
-        .file-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .icon-box { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-left: 20px; flex-shrink: 0; }
-        .file-info { flex-grow: 1; }
-        .file-name { font-weight: 700; font-size: 16px; margin-bottom: 5px; display: block; }
-        .file-meta { font-size: 13px; color: var(--text-secondary); display: flex; gap: 15px; }
-        .action-icon { color: var(--text-secondary); opacity: 0.5; transition: 0.3s; }
-        .file-card:hover .action-icon { opacity: 1; color: var(--primary-color); }
+        .brand-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
 
-        /* ألوان */
-        .type-pdf { background-color: #fadbd8; color: #e74c3c; }
-        .type-doc { background-color: #d6eaf8; color: #2980b9; }
-        .type-xls { background-color: #d5f5e3; color: #27ae60; }
-        .type-img { background-color: #ebdef0; color: #8e44ad; }
-        .type-zip { background-color: #fdebd0; color: #d35400; }
-        .type-default { background-color: #eceff1; color: #607d8b; }
+        .brand-text span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: block;
+            margin-top: -2px;
+        }
+
+        /* --- حالة الاتصال في الهيدر --- */
+        .header-status {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
+        .status-active .status-dot { background: #10b981; }
+
+        /* --- المحتوى الرئيسي --- */
+        .container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-list { list-style: none; padding: 0; display: grid; gap: 16px; }
+
+        .file-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* شريط جانبي ملون حسب النوع */
+        .file-card::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #cbd5e1; /* Default */
+        }
+        
+        .type-pdf .file-card::before { background-color: #ef4444; }
+        .type-doc .file-card::before { background-color: #3b82f6; }
+        .type-xls .file-card::before { background-color: #10b981; }
+        .type-img .file-card::before { background-color: #a855f7; }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-left: 16px;
+            flex-shrink: 0;
+            background-color: #f8fafc;
+        }
+
+        /* ألوان الأيقونات */
+        .type-pdf .icon-box { color: #ef4444; background-color: #fef2f2; }
+        .type-doc .icon-box { color: #3b82f6; background-color: #eff6ff; }
+        .type-xls .icon-box { color: #10b981; background-color: #ecfdf5; }
+        .type-img .icon-box { color: #a855f7; background-color: #f3e8ff; }
+        .type-zip .icon-box { color: #f59e0b; background-color: #fffbeb; }
+
+        .file-info { flex-grow: 1; }
+        .file-name { 
+            font-weight: 700; 
+            font-size: 16px; 
+            color: var(--text-primary);
+            margin-bottom: 4px; 
+            display: block; 
+        }
+        
+        .file-meta-badges {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .download-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            background-color: transparent;
+            transition: 0.2s;
+        }
+
+        .file-card:hover .download-btn {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
 
         /* رسائل الحالة */
-        .status-msg { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .status-msg { 
+            text-align: center; 
+            padding: 60px 20px; 
+            color: var(--text-secondary);
+            background: white;
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+        }
+        
         .error-msg { 
-            background-color: #fee2e2; 
-            color: #b91c1c; 
-            padding: 20px; 
+            background-color: #fef2f2; 
+            color: #991b1b; 
+            padding: 16px; 
             border-radius: 8px; 
-            border: 1px solid #fca5a5;
-            text-align: center;
+            border: 1px solid #fecaca;
+            text-align: right;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
+    <header class="main-header">
+        <div class="brand-logo">
+            <div class="brand-icon-bg">
+                <i class="fas fa-layer-group"></i> </div>
+            <div class="brand-text">
+                <h1>بصيرة</h1>
+                <span>المنصة الرقمية للملفات</span>
+            </div>
+        </div>
+
+        <div class="header-status" id="connectionStatus">
+            <span class="status-dot"></span>
+            <span id="statusText">جاري الاتصال...</span>
+        </div>
+    </header>
+
     <div class="container">
-        <div class="header">
-            <h2><i class="fas fa-folder-open" style="color: #4a90e2;"></i> الملفات المتاحة</h2>
-            <p id="statusText">جاري الاتصال بقاعدة البيانات...</p>
+        <div class="section-title">
+            <i class="far fa-clock"></i>
+            أحدث الملفات المرفوعة
         </div>
 
         <ul class="file-list" id="fileListContainer">
             <li class="status-msg">
-                <i class="fas fa-circle-notch fa-spin fa-2x"></i>
-                <br><br>جاري التحميل...
+                <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary-color);"></i>
+                <br><br>جاري تحميل البيانات...
             </li>
         </ul>
     </div>
@@ -92,22 +270,33 @@
         function showError(message, detail) {
             const listContainer = document.getElementById('fileListContainer');
             const statusText = document.getElementById('statusText');
+            const statusDot = document.querySelector('.status-dot');
             
-            statusText.innerText = "حدث خطأ";
-            statusText.style.color = "red";
+            statusText.innerText = "غير متصل";
+            statusText.style.color = "#ef4444";
+            if(statusDot) statusDot.style.background = "#ef4444";
 
             listContainer.innerHTML = `
                 <li class="error-msg">
-                    <strong><i class="fas fa-bug"></i> خطأ تقني:</strong><br>
-                    ${message}<br><br>
-                    <small style="direction:ltr; display:block; text-align:left;">${detail}</small>
+                    <div style="font-weight:bold; margin-bottom:5px;"><i class="fas fa-exclamation-triangle"></i> حدث خطأ</div>
+                    ${message}
+                    <div style="font-size:0.85em; opacity:0.8; margin-top:5px; direction:ltr; text-align:left;">${detail}</div>
                 </li>
             `;
         }
 
+        function updateStatus(connected) {
+            const statusText = document.getElementById('statusText');
+            const wrapper = document.getElementById('connectionStatus');
+            if(connected) {
+                statusText.innerText = "متصل";
+                wrapper.classList.add('status-active');
+            }
+        }
+
         // 1. التأكد من تحميل المكتبة
         if (typeof window.supabase === 'undefined') {
-            showError("لم يتم تحميل مكتبة Supabase", "Check your internet connection or CDN link.");
+            showError("لم يتم تحميل مكتبة Supabase", "Check Internet Connection");
         } else {
 
             // 2. إعداد الاتصال
@@ -120,22 +309,18 @@
                 function getFileStyle(filename) {
                     if (!filename) return { icon: 'fa-file', class: 'type-default', label: 'ملف' };
                     const ext = filename.split('.').pop().toLowerCase();
-                    if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'ملف PDF' };
+                    if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'PDF' };
                     if (['doc', 'docx'].includes(ext)) return { icon: 'fa-file-word', class: 'type-doc', label: 'Word' };
                     if (['xls', 'xlsx'].includes(ext)) return { icon: 'fa-file-excel', class: 'type-xls', label: 'Excel' };
-                    if (['jpg', 'png', 'jpeg'].includes(ext)) return { icon: 'fa-file-image', class: 'type-img', label: 'صورة' };
-                    if (['zip', 'rar'].includes(ext)) return { icon: 'fa-file-zipper', class: 'type-zip', label: 'مضغوط' };
+                    if (['jpg', 'png', 'jpeg'].includes(ext)) return { icon: 'fa-file-image', class: 'type-img', label: 'Image' };
+                    if (['zip', 'rar'].includes(ext)) return { icon: 'fa-file-zipper', class: 'type-zip', label: 'Zip' };
                     return { icon: 'fa-file', class: 'type-default', label: ext.toUpperCase() };
                 }
 
                 async function loadFiles() {
                     const listContainer = document.getElementById('fileListContainer');
-                    const statusText = document.getElementById('statusText');
 
                     try {
-                        console.log("Start fetching..."); // للتجربة في الكونسول
-
-                        // جلب البيانات
                         let { data: files, error } = await supabase
                             .from('files')
                             .select('*')
@@ -143,38 +328,41 @@
 
                         if (error) throw error;
 
-                        console.log("Data fetched:", files); // للتجربة في الكونسول
-
+                        updateStatus(true);
                         listContainer.innerHTML = ''; 
-                        statusText.innerText = "تصفح وحمل الملفات من القائمة أدناه";
 
                         if (!files || files.length === 0) {
-                            listContainer.innerHTML = '<li class="status-msg">الجدول فارغ، لا توجد ملفات.</li>';
+                            listContainer.innerHTML = `
+                                <li class="status-msg">
+                                    <i class="far fa-folder-open fa-3x" style="color:#cbd5e1; margin-bottom:15px"></i>
+                                    <div>لا توجد ملفات لعرضها حالياً</div>
+                                </li>`;
                             return;
                         }
 
                         files.forEach(file => {
                             const style = getFileStyle(file.name);
-                            // حماية ضد التواريخ الفارغة
                             const date = file.created_at ? new Date(file.created_at).toLocaleDateString('ar-EG') : 'بدون تاريخ';
                             const url = file.file_url || '#';
 
                             const htmlItem = `
-                                <li>
-                                    <a href="${url}" target="_blank" class="file-item-link">
+                                <li class="${style.class}">
+                                    <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">
                                         <div class="file-card">
-                                            <div class="icon-box ${style.class}">
+                                            <div class="icon-box">
                                                 <i class="fas ${style.icon}"></i>
                                             </div>
                                             <div class="file-info">
-                                                <span class="file-name">${file.name || 'بدون اسم'}</span>
-                                                <div class="file-meta">
-                                                    <span><i class="far fa-file"></i> ${style.label}</span>
-                                                    <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                                                <span class="file-name">${file.name || 'ملف بدون اسم'}</span>
+                                                <div class="file-meta-badges">
+                                                    <span class="badge">${style.label}</span>
+                                                    <span class="badge" style="background:transparent; padding-left:0; color:#94a3b8">
+                                                        <i class="far fa-calendar" style="margin-left:4px"></i>${date}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="action-icon">
-                                                <i class="fas fa-download"></i>
+                                            <div class="download-btn">
+                                                <i class="fas fa-cloud-arrow-down"></i>
                                             </div>
                                         </div>
                                     </a>
@@ -184,16 +372,15 @@
                         });
 
                     } catch (err) {
-                        console.error("Error caught:", err);
-                        showError("فشل في جلب البيانات من السيرفر", err.message || JSON.stringify(err));
+                        console.error("Error:", err);
+                        showError("فشل الاتصال بقاعدة البيانات", err.message);
                     }
                 }
 
-                // تشغيل الدالة
                 loadFiles();
 
             } catch (setupError) {
-                showError("خطأ في إعداد Supabase", setupError.message);
+                showError("خطأ في التهيئة", setupError.message);
             }
         }
     </script>
