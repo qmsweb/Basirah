@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f8f9fa;
+            --surface-color: #ffffff;
+            --primary-color: #2563eb; 
+            --primary-dark: #1e40af;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            color: var(--text-primary);
+            padding-bottom: 50px;
+        }
+
+        /* --- الهيدر --- */
+        .main-header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-text h1 { font-size: 20px; font-weight: 800; margin: 0; }
+        
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+
+        /* --- نموذج الإدخال --- */
+        .form-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-title { font-weight: 700; margin-bottom: 20px; color: var(--primary-color); display:flex; justify-content:space-between; align-items:center; }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 100px; /* اسم، رابط، ترتيب */
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Cairo';
+            box-sizing: border-box;
+        }
+
+        .form-input:focus { outline: none; border-color: var(--primary-color); }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cairo';
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-primary { background-color: var(--primary-color); color: white; width: 100%; margin-top: 15px; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        
+        .btn-cancel { background-color: #e2e8f0; color: #475569; width: 100%; margin-top: 10px; display: none; } /* مخفي افتراضياً */
+
+        /* --- قائمة العناصر --- */
+        .items-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .item-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .item-card:hover { border-color: var(--primary-color); }
+
+        .item-info { flex-grow: 1; }
+        .item-name { font-weight: 700; font-size: 16px; display: block; }
+        .item-link { font-size: 12px; color: var(--text-secondary); text-decoration: none; word-break: break-all; }
+        .item-order { 
+            background: #eff6ff; color: var(--primary-color); 
+            padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-left: 10px;
+        }
+
+        .actions { display: flex; gap: 8px; }
+        
+        .btn-icon {
+            width: 35px; height: 35px; border-radius: 8px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .btn-edit { background-color: #fef3c7; color: #d97706; }
+        .btn-delete { background-color: #fee2e2; color: #dc2626; }
+
+        /* رسائل */
+        .loading { text-align: center; color: var(--text-secondary); margin-top: 20px; }
+        
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="brand-text">
+            <h1>لوحة التحكم</h1>
+        </div>
+        <div>
+            <i class="fas fa-user-cog" style="color: var(--primary-color);"></i>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="form-card">
+            <div class="form-title">
+                <span id="formTitleText">إضافة عنصر جديد</span>
+                <i class="fas fa-pen-to-square"></i>
+            </div>
+            
+            <form id="dataForm">
+                <input type="hidden" id="editId"> <div class="form-grid">
+                    <div>
+                        <label style="font-size:12px; font-weight:bold">اسم الملف</label>
+                        <input type="text" id="itemName" class="form-input" placeholder="اسم الملف" required>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:bold">الرابط</label>
+                        <input type="url" id="itemUrl" class="form-input" placeholder="https://" required>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:bold">الترتيب</label>
+                        <input type="number" id="itemOrder" class="form-input" placeholder="1" value="1">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-plus"></i> حفظ البيانات
+                </button>
+                <button type="button" class="btn btn-cancel" id="cancelBtn" onclick="resetForm()">
+                    إلغاء التعديل
+                </button>
+            </form>
+        </div>
+
+        <h3 style="margin-bottom: 15px;">العناصر الحالية</h3>
+        <ul class="items-list" id="itemsContainer">
+            <li class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات...</li>
+        </ul>
+
+    </div>
+
+    <script>
+        // 1. إعداد الاتصال
+        const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
+
+        if (typeof window.supabase === 'undefined') {
+            alert("خطأ في تحميل المكتبات");
+        } else {
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // تعريف المتغيرات
+            const form = document.getElementById('dataForm');
+            const itemsContainer = document.getElementById('itemsContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const formTitle = document.getElementById('formTitleText');
+
+            // --- دالة تحميل البيانات وعرضها ---
+            async function loadItems() {
+                itemsContainer.innerHTML = '<li class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحديث...</li>';
+                
+                // نقوم بجلب البيانات مرتبة حسب عمود sort_order (إن وجد) ثم created_at
+                // ملاحظة: إذا لم يكن sort_order موجوداً في القاعدة، قد يحدث خطأ، لذا يفضل إنشاؤه.
+                const { data, error } = await supabase
+                    .from('files')
+                    .select('*')
+                    .order('sort_order', { ascending: true }) 
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error(error);
+                    itemsContainer.innerHTML = '<li class="loading" style="color:red">فشل جلب البيانات. تأكد من وجود عمود sort_order</li>';
+                    return;
+                }
+
+                itemsContainer.innerHTML = '';
+                
+                if(data.length === 0) {
+                    itemsContainer.innerHTML = '<li class="loading">لا توجد بيانات حالياً</li>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'item-card';
+                    li.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-name">
+                                <span class="item-order">#${item.sort_order || 0}</span>
+                                ${item.name}
+                            </span>
+                            <a href="${item.file_url}" target="_blank" class="item-link">${item.file_url}</a>
+                        </div>
+                        <div class="actions">
+                            <button onclick="editItem('${item.id}', '${item.name}', '${item.file_url}', '${item.sort_order}')" class="btn-icon btn-edit" title="تعديل">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button onclick="deleteItem('${item.id}')" class="btn-icon btn-delete" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(li);
+                });
+            }
+
+            // --- دالة الحفظ (إضافة أو تعديل) ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const id = document.getElementById('editId').value;
+                const name = document.getElementById('itemName').value;
+                const url = document.getElementById('itemUrl').value;
+                const order = document.getElementById('itemOrder').value || 0;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المعالجة...';
+
+                let error;
+
+                if (id) {
+                    // وضع التعديل Update
+                    const { err } = await supabase
+                        .from('files')
+                        .update({ name: name, file_url: url, sort_order: order })
+                        .eq('id', id);
+                    error = err;
+                } else {
+                    // وضع الإضافة Insert
+                    const { err } = await supabase
+                        .from('files')
+                        .insert([{ name: name, file_url: url, sort_order: order }]);
+                    error = err;
+                }
+
+                if (!error) {
+                    resetForm();
+                    loadItems(); // إعادة تحميل القائمة
+                } else {
+                    alert('حدث خطأ: ' + error.message);
+                }
+
+                submitBtn.disabled = false;
+            });
+
+            // --- دالة الحذف ---
+            window.deleteItem = async (id) => {
+                if(confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر؟')) {
+                    const { error } = await supabase
+                        .from('files')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if(!error) {
+                        loadItems();
+                    } else {
+                        alert('فشل الحذف');
+                    }
+                }
+            };
+
+            // --- دالة التعديل (ملء النموذج) ---
+            window.editItem = (id, name, url, order) => {
+                document.getElementById('editId').value = id;
+                document.getElementById('itemName').value = name;
+                document.getElementById('itemUrl').value = url;
+                document.getElementById('itemOrder').value = (order === 'null' || order === 'undefined') ? 0 : order;
+
+                // تغيير شكل الزر
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.style.backgroundColor = '#f59e0b'; // لون برتقالي للتعديل
+                
+                cancelBtn.style.display = 'block';
+                formTitle.innerText = 'تعديل العنصر';
+
+                // الصعود لأعلى الصفحة
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            // --- إعادة تعيين النموذج ---
+            window.resetForm = () => {
+                form.reset();
+                document.getElementById('editId').value = '';
+                document.getElementById('itemOrder').value = '1';
+                
+                submitBtn.innerHTML = '<i class="fas fa-plus"></i> حفظ البيانات';
+                submitBtn.style.backgroundColor = ''; // العودة للون الأصلي CSS
+                submitBtn.classList.add('btn-primary');
+                
+                cancelBtn.style.display = 'none';
+                formTitle.innerText = 'إضافة عنصر جديد';
+            };
+
+            // تحميل البيانات عند فتح الصفحة
+            loadItems();
+        }
+    </script>
+</body>
+</html>
