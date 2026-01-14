@@ -3,318 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - رفع ملفات</title>
+    <title>لوحة التحكم الشاملة</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-body: #f8f9fa;
-            --surface-color: #ffffff;
-            --primary-color: #2563eb; 
-            --primary-dark: #1e40af;
-            --text-primary: #1e293b;
-            --border-color: #e2e8f0;
+            --primary: #2563eb;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --danger: #dc2626;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            padding-bottom: 50px;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
+            padding: 20px;
         }
 
-        .main-header {
-            background-color: var(--surface-color);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 2rem;
-            height: 70px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* التصميم */
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        h2, h3 { margin-top: 0; color: var(--primary); }
+
+        /* الحقول والأزرار */
+        .form-group { margin-bottom: 15px; }
+        
+        label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Cairo';
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: 0.2s;
+        }
+        
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'Cairo';
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* القائمة */
+        .file-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: sticky; top: 0; z-index: 1000;
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
         }
+        .file-item:last-child { border-bottom: none; }
 
-        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-
-        .form-card {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 100px;
-            gap: 15px;
+        .file-info { display: flex; align-items: center; gap: 15px; }
+        .order-badge { 
+            background: #eff6ff; color: var(--primary); 
+            padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px; 
         }
         
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-
-        .form-input {
-            width: 100%; padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px; font-family: 'Cairo';
-            box-sizing: border-box;
+        .actions button {
+            background: none; border: none; cursor: pointer; padding: 8px; border-radius: 6px;
         }
-        
-        /* تنسيق خاص لحقل الملف */
-        input[type="file"]::file-selector-button {
-            background-color: #e2e8f0; border: none; padding: 8px 12px;
-            border-radius: 4px; font-family: 'Cairo'; cursor: pointer;
+        .btn-del { color: var(--danger); background: #fef2f2 !important; }
+
+        /* رسائل الحالة */
+        .status-msg { 
+            padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; text-align: center; font-weight: bold;
         }
-
-        .btn {
-            padding: 12px 20px; border: none; border-radius: 8px;
-            font-family: 'Cairo'; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-        }
-
-        .btn-primary { background-color: var(--primary-color); color: white; margin-top: 15px; }
-        .btn-cancel { background-color: #e2e8f0; color: #475569; margin-top: 10px; display: none; }
-
-        .items-list { list-style: none; padding: 0; }
-        .item-card {
-            background: white; border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 15px; margin-bottom: 10px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        
-        .item-info { display: flex; flex-direction: column; }
-        .current-file-link { font-size: 12px; color: var(--primary-color); margin-top: 5px; text-decoration: none; }
-
-        .btn-icon { width: 35px; height: 35px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .btn-edit { background-color: #fef3c7; color: #d97706; }
-        .btn-delete { background-color: #fee2e2; color: #dc2626; margin-right: 5px; }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <h1 style="font-size: 20px; margin: 0;">لوحة الرفع المباشر</h1>
-    </header>
-
     <div class="container">
-        <div class="form-card">
-            <h3 id="formTitleText" style="margin-top:0">إضافة ملف جديد</h3>
+        
+        <div id="statusMsg" class="status-msg"></div>
+
+        <div class="card">
+            <h2><i class="fas fa-plus-circle"></i> إضافة ملف جديد</h2>
             
-            <form id="dataForm">
-                <input type="hidden" id="editId">
-                <input type="hidden" id="existingUrl"> <div class="form-grid">
-                    <div>
-                        <label style="font-size:12px; font-weight:bold">اسم العرض</label>
-                        <input type="text" id="itemName" class="form-input" placeholder="مثال: الخطة الدراسية" required>
-                    </div>
-                    <div>
-                        <label style="font-size:12px; font-weight:bold">اختر الملف</label>
-                        <input type="file" id="fileInput" class="form-input">
-                        <div id="currentFileDisplay" style="display:none; font-size:11px; color:green; margin-top:5px;">
-                            يوجد ملف محفوظ حالياً (اترك الخانة فارغة للاحتفاظ به)
-                        </div>
-                    </div>
-                    <div>
-                        <label style="font-size:12px; font-weight:bold">الترتيب</label>
-                        <input type="number" id="itemOrder" class="form-input" value="1">
-                    </div>
-                </div>
+            <div class="form-group">
+                <label>اسم الملف (كما سيظهر للزوار)</label>
+                <input type="text" id="fileName" placeholder="مثال: جدول المحاضرات">
+            </div>
 
-                <div id="uploadStatus" style="display:none; margin-top:10px; font-size:13px; color:var(--primary-color);">
-                    <i class="fas fa-spinner fa-spin"></i> جاري رفع الملف وحفظ البيانات...
-                </div>
+            <div class="form-group">
+                <label>رقم الترتيب (اختياري)</label>
+                <input type="number" id="fileOrder" placeholder="1" value="1">
+            </div>
 
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <i class="fas fa-cloud-upload-alt"></i> رفع وحفظ
-                </button>
-                <button type="button" class="btn btn-cancel" id="cancelBtn" onclick="resetForm()">
-                    إلغاء
-                </button>
-            </form>
+            <div class="form-group">
+                <label>الملف (PDF, صور, Word...)</label>
+                <input type="file" id="fileUpload">
+            </div>
+
+            <button onclick="uploadAndSave()" id="saveBtn" class="btn btn-primary">
+                <i class="fas fa-cloud-upload-alt"></i> رفع وحفظ الملف
+            </button>
         </div>
 
-        <h3 style="margin-bottom: 15px;">الملفات المرفوعة</h3>
-        <ul class="items-list" id="itemsContainer">
-            <li style="text-align:center">جاري التحميل...</li>
-        </ul>
+        <div class="card">
+            <h3><i class="fas fa-list"></i> الملفات الحالية</h3>
+            <div id="filesList">
+                <p style="text-align:center; color:#64748b;">جاري تحميل البيانات...</p>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // إعدادات Supabase
+        // بيانات الاتصال الخاصة بك
         const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const BUCKET_NAME = 'uploads'; // اسم السلة كما طلبت
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const BUCKET_NAME = 'uploads';
 
-        // عناصر DOM
-        const form = document.getElementById('dataForm');
-        const fileInput = document.getElementById('fileInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const uploadStatus = document.getElementById('uploadStatus');
-
-        // --- دالة رفع الملف ---
-        async function uploadFileToStorage(file) {
-            // تنظيف اسم الملف وإضافة وقت لضمان عدم التكرار
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
-            const filePath = `${fileName}`;
-
-            // رفع الملف إلى uploads
-            const { data, error } = await supabase.storage
-                .from(BUCKET_NAME)
-                .upload(filePath, file);
-
-            if (error) throw error;
-
-            // الحصول على الرابط العام
-            const { data: publicUrlData } = supabase.storage
-                .from(BUCKET_NAME)
-                .getPublicUrl(filePath);
-
-            return publicUrlData.publicUrl;
+        // --- دالة عرض الرسائل ---
+        function showStatus(msg, type) {
+            const el = document.getElementById('statusMsg');
+            el.className = 'status-msg ' + type;
+            el.innerHTML = msg;
+            el.style.display = 'block';
+            if (type === 'success') setTimeout(() => el.style.display = 'none', 3000);
         }
 
-        // --- دالة الحفظ (Submit) ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const id = document.getElementById('editId').value;
-            const name = document.getElementById('itemName').value;
-            const order = document.getElementById('itemOrder').value || 1;
-            const file = fileInput.files[0];
-            let finalUrl = document.getElementById('existingUrl').value;
+        // --- 1. عملية الرفع والحفظ ---
+        async function uploadAndSave() {
+            const nameInput = document.getElementById('fileName');
+            const orderInput = document.getElementById('fileOrder');
+            const fileInput = document.getElementById('fileUpload');
+            const btn = document.getElementById('saveBtn');
 
-            // التحقق: هل يوجد ملف جديد أم رابط قديم؟
-            if (!file && !finalUrl) {
-                alert('الرجاء اختيار ملف للرفع');
+            const file = fileInput.files[0];
+            const name = nameInput.value;
+            const order = orderInput.value || 1;
+
+            if (!name || !file) {
+                showStatus('الرجاء كتابة اسم الملف واختيار ملف للرفع', 'error');
                 return;
             }
 
-            // تفعيل حالة التحميل
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.5';
-            uploadStatus.style.display = 'block';
+            // بدء التحميل
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
 
             try {
-                // 1. إذا تم اختيار ملف جديد، قم برفعه أولاً
-                if (file) {
-                    finalUrl = await uploadFileToStorage(file);
-                }
+                // أ) رفع الملف إلى Storage
+                // نقوم بإنشاء اسم فريد للملف لتجنب المشاكل
+                const uniqueFileName = Date.now() + '_' + file.name.replace(/\s/g, '_');
+                
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from(BUCKET_NAME)
+                    .upload(uniqueFileName, file);
 
-                // 2. إدخال أو تحديث البيانات في الجدول
-                let dbError;
-                if (id) {
-                    // تحديث
-                    const { error } = await supabase
-                        .from('files')
-                        .update({ name: name, file_url: finalUrl, sort_order: order })
-                        .eq('id', id);
-                    dbError = error;
-                } else {
-                    // إضافة جديدة
-                    const { error } = await supabase
-                        .from('files')
-                        .insert([{ name: name, file_url: finalUrl, sort_order: order }]);
-                    dbError = error;
-                }
+                if (uploadError) throw new Error('فشل رفع الملف للسلة: ' + uploadError.message);
 
-                if (dbError) throw dbError;
+                // ب) الحصول على الرابط
+                const { data: urlData } = supabase.storage
+                    .from(BUCKET_NAME)
+                    .getPublicUrl(uniqueFileName);
+                
+                const publicUrl = urlData.publicUrl;
 
-                // 3. نجاح العملية
-                resetForm();
-                loadItems();
-                alert('تمت العملية بنجاح!');
+                // ج) حفظ البيانات في الجدول
+                const { error: dbError } = await supabase
+                    .from('files')
+                    .insert([{ 
+                        name: name, 
+                        file_url: publicUrl, 
+                        sort_order: parseInt(order) 
+                    }]);
+
+                if (dbError) throw new Error('فشل الحفظ في قاعدة البيانات: ' + dbError.message);
+
+                // نجاح!
+                showStatus('تم رفع الملف وحفظه بنجاح!', 'success');
+                nameInput.value = '';
+                fileInput.value = '';
+                getFiles(); // تحديث القائمة
 
             } catch (err) {
                 console.error(err);
-                alert('حدث خطأ: ' + err.message);
+                showStatus(err.message, 'error');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                uploadStatus.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> رفع وحفظ الملف';
             }
-        });
+        }
 
-        // --- دالة جلب العناصر ---
-        async function loadItems() {
-            const container = document.getElementById('itemsContainer');
-            container.innerHTML = '<li style="text-align:center; color:#888;">جاري التحديث...</li>';
-
-            // إذا لم يكن لديك عمود sort_order احذف السطر التالي
+        // --- 2. جلب وعرض الملفات ---
+        async function getFiles() {
+            const listDiv = document.getElementById('filesList');
+            
             const { data, error } = await supabase
                 .from('files')
                 .select('*')
                 .order('sort_order', { ascending: true });
 
-            if (error || !data) {
-                container.innerHTML = '<li style="color:red; text-align:center;">خطأ في جلب البيانات</li>';
+            if (error) {
+                listDiv.innerHTML = `<p style="color:red; text-align:center">حدث خطأ: ${error.message}</p>`;
                 return;
             }
 
-            container.innerHTML = '';
-            if (data.length === 0) container.innerHTML = '<li style="text-align:center;">لا توجد ملفات</li>';
+            if (data.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center; color:#64748b;">لا توجد ملفات حالياً</p>';
+                return;
+            }
 
+            let html = '';
             data.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'item-card';
-                li.innerHTML = `
-                    <div class="item-info">
-                        <strong>${item.name}</strong>
-                        <a href="${item.file_url}" target="_blank" class="current-file-link">
-                            <i class="fas fa-external-link-alt"></i> معاينة الملف
-                        </a>
-                    </div>
-                    <div style="display:flex;">
-                        <button onclick="editItem('${item.id}', '${item.name}', '${item.file_url}', '${item.sort_order}')" class="btn-icon btn-edit"><i class="fas fa-pen"></i></button>
-                        <button onclick="deleteItem('${item.id}')" class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                html += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <span class="order-badge">#${item.sort_order}</span>
+                            <strong>${item.name}</strong>
+                        </div>
+                        <div class="actions">
+                            <a href="${item.file_url}" target="_blank" style="text-decoration:none; margin-left:10px; color:#2563eb;">
+                                <i class="fas fa-external-link-alt"></i> معاينة
+                            </a>
+                            <button onclick="deleteFile('${item.id}')" class="btn-del" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
-                container.appendChild(li);
             });
+            listDiv.innerHTML = html;
         }
 
-        // --- دالة الحذف ---
-        window.deleteItem = async (id) => {
-            if(confirm('هل تريد حذف هذا السجل؟ (ملاحظة: لن يتم حذف الملف من السلة لتجنب الخطأ)')) {
-                await supabase.from('files').delete().eq('id', id);
-                loadItems();
+        // --- 3. حذف ملف ---
+        async function deleteFile(id) {
+            if (!confirm('هل أنت متأكد من الحذف؟')) return;
+
+            const { error } = await supabase
+                .from('files')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                showStatus('فشل الحذف: ' + error.message, 'error');
+            } else {
+                getFiles();
+                showStatus('تم الحذف بنجاح', 'success');
             }
-        };
+        }
 
-        // --- دالة التجهيز للتعديل ---
-        window.editItem = (id, name, url, order) => {
-            document.getElementById('editId').value = id;
-            document.getElementById('itemName').value = name;
-            document.getElementById('itemOrder').value = order || 1;
-            document.getElementById('existingUrl').value = url;
-            
-            // إظهار تنبيه أن هناك ملف موجود
-            document.getElementById('currentFileDisplay').style.display = 'block';
-            document.getElementById('fileInput').required = false; // لم يعد الملف إلزامياً لأن هناك ملف قديم
-            
-            // تغيير شكل الأزرار
-            submitBtn.innerHTML = 'حفظ التغييرات';
-            document.getElementById('cancelBtn').style.display = 'block';
-            document.getElementById('formTitleText').innerText = 'تعديل الملف';
-            window.scrollTo({top:0, behavior:'smooth'});
-        };
+        // تشغيل عند فتح الصفحة
+        getFiles();
 
-        // --- إعادة تعيين النموذج ---
-        window.resetForm = () => {
-            form.reset();
-            document.getElementById('editId').value = '';
-            document.getElementById('existingUrl').value = '';
-            document.getElementById('currentFileDisplay').style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'none';
-            submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> رفع وحفظ';
-            document.getElementById('formTitleText').innerText = 'إضافة ملف جديد';
-        };
-
-        loadItems();
     </script>
 </body>
 </html>
