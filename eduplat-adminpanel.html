@@ -3,311 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المتقدمة</title>
+    <title>لوحة التحكم - رفع الملفات</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #2563eb;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --bg-body: #f1f5f9;
+            --surface-color: #ffffff;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --error-color: #ef4444;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-body);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: var(--text-primary);
+            min-height: 100vh;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        /* --- الهيدر --- */
+        .admin-header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
 
-        /* البطاقات */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary-color); }
+
+        /* --- الحاوية --- */
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .upload-card {
+            background: var(--surface-color);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card-header h2 { margin: 0; font-size: 1.5rem; }
+        .card-header p { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+
+        /* --- عناصر النموذج --- */
+        .form-group { margin-bottom: 20px; }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        .form-input[readonly] {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* --- منطقة رفع الملف --- */
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed var(--border-color);
             border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 30px;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
         }
 
-        h2, h3 { margin-top: 0; color: var(--primary); font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
-
-        /* النموذج */
-        .form-row { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px; }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-
-        label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; }
-        
-        input {
-            width: 100%; padding: 10px; border: 2px solid var(--border);
-            border-radius: 8px; font-family: 'Cairo'; box-sizing: border-box;
+        .file-upload-wrapper:hover {
+            border-color: var(--primary-color);
+            background-color: #eff6ff;
         }
-        input:focus { border-color: var(--primary); outline: none; }
 
-        /* الأزرار */
-        .btn {
-            padding: 12px 20px; border: none; border-radius: 8px;
-            font-family: 'Cairo'; font-weight: 700; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            transition: 0.2s; width: 100%;
+        .file-upload-input {
+            position: absolute;
+            left: 0; top: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-cancel { background: #cbd5e1; color: #334155; display: none; margin-top: 10px; }
-        
-        /* الجدول */
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        
-        th { background: #f1f5f9; text-align: right; padding: 12px; color: #475569; font-size: 0.9rem; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-        tr:last-child td { border-bottom: none; }
-        
-        .action-btn {
-            width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; margin-left: 5px;
-        }
-        .btn-edit { background: #fef3c7; color: #d97706; }
-        .btn-del { background: #fee2e2; color: #dc2626; }
 
-        /* حالة التعديل */
-        .current-file-info {
-            background: #ecfdf5; color: #047857; padding: 10px; 
-            border-radius: 6px; font-size: 0.85rem; margin-top: 5px; display: none;
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
+
+        /* --- الأزرار --- */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover { background-color: var(--primary-hover); }
+        .btn-submit:disabled { background-color: var(--text-secondary); cursor: not-allowed; }
+
+        /* --- رسائل التنبيه --- */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* تلميح صغير */
+        .hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px; }
+
     </style>
 </head>
 <body>
 
+    <header class="admin-header">
+        <div class="brand-text">
+            <h1><i class="fas fa-cogs"></i> لوحة التحكم</h1>
+        </div>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-right"></i> العودة للأرشيف</a>
+    </header>
+
     <div class="container">
-        
-        <div class="card" id="formCard">
-            <h2 id="formTitle"><i class="fas fa-plus-circle"></i> إضافة ملف جديد</h2>
-            
-            <input type="hidden" id="editId"> <input type="hidden" id="oldFileUrl"> <div class="form-row">
-                <div>
-                    <label>اسم الملف</label>
-                    <input type="text" id="fileName" placeholder="مثال: الخطة الدراسية">
-                </div>
-                <div>
-                    <label>الترتيب</label>
-                    <input type="number" id="fileOrder" placeholder="1" value="1">
-                </div>
+        <div class="upload-card">
+            <div class="card-header">
+                <h2>رفع ملف جديد</h2>
+                <p>سيتم إضافة الملف للأرشيف الشجري تلقائياً</p>
             </div>
 
-            <div style="margin-bottom: 15px;">
-                <label>الملف</label>
-                <input type="file" id="fileUpload">
-                <div id="currentFileMsg" class="current-file-info">
-                    <i class="fas fa-check"></i> يوجد ملف محفوظ حالياً. اترك الخانة فارغة إذا كنت لا تريد تغييره.
+            <form id="uploadForm">
+                
+                <div class="form-group">
+                    <label class="form-label">اختر الملف</label>
+                    <div class="file-upload-wrapper" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div id="fileLabel">اضغط هنا لاختيار ملف</div>
+                        <input type="file" id="fileInput" class="file-upload-input" required>
+                    </div>
                 </div>
-            </div>
 
-            <button onclick="handleFormSubmit()" id="saveBtn" class="btn btn-primary">
-                <i class="fas fa-save"></i> حفظ البيانات
-            </button>
-            <button onclick="resetForm()" id="cancelBtn" class="btn btn-cancel">
-                إلغاء التعديل
-            </button>
+                <div class="form-group">
+                    <label class="form-label">مسار الملف (لإنشاء المجلدات)</label>
+                    <input type="text" id="fileNameInput" class="form-input" placeholder="مثال: الإدارة/التقارير/تقرير-2024.pdf" required>
+                    <div class="hint">استخدم العلامة (/) لإنشاء مجلدات فرعية.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">رابط الملف (يتم جلبه تلقائياً)</label>
+                    <div style="position: relative;">
+                        <input type="text" id="fileUrlInput" class="form-input" placeholder="سيظهر الرابط هنا بعد الرفع..." readonly>
+                        <i class="fas fa-link" style="position: absolute; left: 15px; top: 15px; color: var(--text-secondary);"></i>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">
+                    <span>رفع وحفظ البيانات</span>
+                    <i class="fas fa-save"></i>
+                </button>
+
+                <div id="statusMessage" class="alert"></div>
+
+            </form>
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-table"></i> سجل الملفات</h3>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th width="10%">#</th>
-                            <th width="40%">اسم الملف</th>
-                            <th width="20%">معاينة</th>
-                            <th width="30%">تحكم</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr><td colspan="4" style="text-align:center">جاري التحميل...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // إعدادات الاتصال
+        // إعداد Supabase (نفس المفاتيح الخاصة بك)
         const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const BUCKET_NAME = 'uploads';
+        // العناصر
+        const fileInput = document.getElementById('fileInput');
+        const fileNameInput = document.getElementById('fileNameInput');
+        const fileUrlInput = document.getElementById('fileUrlInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMessage');
+        const fileLabel = document.getElementById('fileLabel');
+        const dropZone = document.getElementById('dropZone');
 
-        // --- 1. المنطق الرئيسي (إضافة وتعديل) ---
-        async function handleFormSubmit() {
-            const id = document.getElementById('editId').value;
-            const name = document.getElementById('fileName').value;
-            const order = document.getElementById('fileOrder').value || 1;
-            const fileInput = document.getElementById('fileUpload');
+        // تحديث اسم الملف عند الاختيار
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileLabel.textContent = file.name;
+                dropZone.style.borderColor = 'var(--primary-color)';
+                dropZone.style.backgroundColor = '#eff6ff';
+                
+                // اقتراح اسم تلقائي إذا كان الحقل فارغاً
+                if (!fileNameInput.value) {
+                    fileNameInput.value = file.name;
+                }
+            }
+        });
+
+        // دالة الرفع والحفظ
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
             const file = fileInput.files[0];
-            const oldUrl = document.getElementById('oldFileUrl').value;
-            const btn = document.getElementById('saveBtn');
+            const pathName = fileNameInput.value.trim(); // الاسم الذي سيظهر في الشجرة
 
-            // تحقق بسيط
-            if (!name) return alert("الرجاء كتابة اسم الملف");
-            if (!id && !file) return alert("الرجاء اختيار ملف"); // في حالة الإضافة الجديدة، الملف إجباري
+            if (!file) {
+                showAlert('الرجاء اختيار ملف', 'error');
+                return;
+            }
+            if (!pathName) {
+                showAlert('الرجاء كتابة اسم الملف أو المسار', 'error');
+                return;
+            }
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المعالجة...';
+            setLoading(true);
 
             try {
-                let finalUrl = oldUrl;
+                // 1. رفع الملف إلى Supabase Storage (Bucket: uploads)
+                // نستخدم Timestamp لتجنب تكرار الأسماء في التخزين
+                const storagePath = `public/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+                
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('uploads')
+                    .upload(storagePath, file);
 
-                // أ) هل قام المستخدم برفع ملف جديد؟
-                if (file) {
-                    const uniqueName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '');
-                    const { error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(uniqueName, file);
-                    if (uploadError) throw uploadError;
+                if (uploadError) throw uploadError;
 
-                    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(uniqueName);
-                    finalUrl = urlData.publicUrl;
-                }
+                // 2. جلب الرابط العام (Public URL)
+                const { data: urlData } = supabase.storage
+                    .from('uploads')
+                    .getPublicUrl(storagePath);
 
-                // ب) هل العملية إضافة أم تعديل؟
-                let dbError;
-                if (id) {
-                    // --- تعديل (UPDATE) ---
-                    const { error } = await supabase
-                        .from('files')
-                        .update({ name: name, sort_order: order, file_url: finalUrl })
-                        .eq('id', id);
-                    dbError = error;
-                } else {
-                    // --- إضافة (INSERT) ---
-                    const { error } = await supabase
-                        .from('files')
-                        .insert([{ name: name, sort_order: order, file_url: finalUrl }]);
-                    dbError = error;
-                }
+                const publicUrl = urlData.publicUrl;
+
+                // عرض الرابط في الخانة (حسب طلبك)
+                fileUrlInput.value = publicUrl;
+
+                // 3. حفظ البيانات في جدول قاعدة البيانات (files)
+                // هذا الجدول هو الذي تقرأ منه صفحة الشجرة
+                const { error: dbError } = await supabase
+                    .from('files')
+                    .insert([
+                        { 
+                            name: pathName,    // الاسم مع المسار (مثل: مجلد/ملف.pdf)
+                            file_url: publicUrl // الرابط الذي تم جلبه
+                        }
+                    ]);
 
                 if (dbError) throw dbError;
 
-                // نجاح
-                alert("تمت العملية بنجاح!");
-                resetForm();
-                fetchData();
+                showAlert('تم رفع الملف وحفظه بنجاح!', 'success');
+                
+                // إعادة تعيين النموذج بعد ثانيتين
+                setTimeout(() => {
+                    document.getElementById('uploadForm').reset();
+                    fileLabel.textContent = 'اضغط هنا لاختيار ملف';
+                    fileUrlInput.value = '';
+                    setLoading(false);
+                    dropZone.style = '';
+                }, 2000);
 
-            } catch (err) {
-                console.error(err);
-                alert("حدث خطأ: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-save"></i> حفظ البيانات';
+            } catch (error) {
+                console.error(error);
+                showAlert('حدث خطأ: ' + error.message, 'error');
+                setLoading(false);
+            }
+        });
+
+        // دوال مساعدة
+        function showAlert(msg, type) {
+            statusMsg.style.display = 'block';
+            statusMsg.textContent = msg;
+            if (type === 'success') {
+                statusMsg.className = 'alert alert-success';
+            } else {
+                statusMsg.className = 'alert alert-error';
             }
         }
 
-        // --- 2. جلب البيانات وعرضها في الجدول ---
-        async function fetchData() {
-            const tbody = document.getElementById('tableBody');
-            
-            const { data, error } = await supabase
-                .from('files')
-                .select('*')
-                .order('sort_order', { ascending: true });
-
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center">خطأ: ${error.message}</td></tr>`;
-                return;
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>رفع وحفظ البيانات</span><i class="fas fa-save"></i>';
             }
-
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888">لا توجد سجلات</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            data.forEach(item => {
-                html += `
-                    <tr>
-                        <td><span style="background:#eff6ff; color:#2563eb; padding:2px 8px; border-radius:4px; font-weight:bold">${item.sort_order}</span></td>
-                        <td style="font-weight:600">${item.name}</td>
-                        <td>
-                            <a href="${item.file_url}" target="_blank" style="color:#2563eb; text-decoration:none;">
-                                <i class="fas fa-external-link-alt"></i> فتح
-                            </a>
-                        </td>
-                        <td>
-                            <button onclick="editItem('${item.id}', '${item.name}', '${item.sort_order}', '${item.file_url}')" class="action-btn btn-edit" title="تعديل">
-                                <i class="fas fa-pen"></i>
-                            </button>
-                            <button onclick="deleteItem('${item.id}')" class="action-btn btn-del" title="حذف">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
         }
-
-        // --- 3. تجهيز النموذج للتعديل ---
-        window.editItem = function(id, name, order, url) {
-            // تعبئة الحقول
-            document.getElementById('editId').value = id;
-            document.getElementById('fileName').value = name;
-            document.getElementById('fileOrder').value = order;
-            document.getElementById('oldFileUrl').value = url;
-            
-            // تغيير واجهة المستخدم لتناسب التعديل
-            document.getElementById('formTitle').innerHTML = '<i class="fas fa-pen"></i> تعديل بيانات الملف';
-            document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
-            document.getElementById('saveBtn').style.backgroundColor = '#f59e0b'; // لون برتقالي
-            
-            // إظهار زر الإلغاء ورسالة الملف المحفوظ
-            document.getElementById('cancelBtn').style.display = 'inline-flex';
-            document.getElementById('currentFileMsg').style.display = 'block';
-            
-            // الصعود للأعلى
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- 4. إعادة ضبط النموذج (إلغاء التعديل) ---
-        window.resetForm = function() {
-            document.getElementById('editId').value = '';
-            document.getElementById('fileName').value = '';
-            document.getElementById('fileOrder').value = '1';
-            document.getElementById('fileUpload').value = '';
-            document.getElementById('oldFileUrl').value = '';
-
-            // إعادة الواجهة لوضع الإضافة
-            document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة ملف جديد';
-            document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> حفظ البيانات';
-            document.getElementById('saveBtn').style.backgroundColor = ''; // العودة للون الأصلي
-            
-            document.getElementById('cancelBtn').style.display = 'none';
-            document.getElementById('currentFileMsg').style.display = 'none';
-        }
-
-        // --- 5. الحذف ---
-        window.deleteItem = async function(id) {
-            if(!confirm("هل أنت متأكد من حذف هذا الملف نهائياً؟")) return;
-
-            const { error } = await supabase.from('files').delete().eq('id', id);
-            
-            if (error) alert("فشل الحذف: " + error.message);
-            else fetchData();
-        }
-
-        // تشغيل عند البدء
-        fetchData();
-
     </script>
 </body>
 </html>
