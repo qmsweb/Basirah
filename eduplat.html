@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بصيرة | إدارة الملفات</title>
+    <title>الإدارة الإلكترونية</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -73,14 +73,7 @@
             margin: 0;
             color: var(--text-primary);
             letter-spacing: -0.5px;
-        }
-
-        .brand-text span {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            display: block;
-            margin-top: -2px;
+            /* تم حذف الوصف من هنا */
         }
 
         /* --- حالة الاتصال في الهيدر --- */
@@ -105,15 +98,7 @@
             padding: 0 20px; 
         }
 
-        .section-title {
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        /* تم حذف section-title من هنا */
 
         .file-list { list-style: none; padding: 0; display: grid; gap: 16px; }
 
@@ -135,22 +120,15 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* شريط جانبي ملون حسب النوع */
+        /* شريط جانبي ملون (مبقى للتمييز البسيط) */
         .file-card::before {
             content: '';
             position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: #cbd5e1; /* Default */
+            right: 0; top: 0; bottom: 0; width: 4px;
+            background-color: var(--primary-color); /* جعلنا الشريط الأساسي أزرق */
+            opacity: 0.5;
         }
         
-        .type-pdf .file-card::before { background-color: #ef4444; }
-        .type-doc .file-card::before { background-color: #3b82f6; }
-        .type-xls .file-card::before { background-color: #10b981; }
-        .type-img .file-card::before { background-color: #a855f7; }
-
         .icon-box {
             width: 48px;
             height: 48px;
@@ -158,18 +136,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             margin-left: 16px;
             flex-shrink: 0;
-            background-color: #f8fafc;
+            /* تعديل: توحيد لون الأيقونات للون الأساسي */
+            background-color: #eff6ff; 
+            color: var(--primary-color);
         }
-
-        /* ألوان الأيقونات */
-        .type-pdf .icon-box { color: #ef4444; background-color: #fef2f2; }
-        .type-doc .icon-box { color: #3b82f6; background-color: #eff6ff; }
-        .type-xls .icon-box { color: #10b981; background-color: #ecfdf5; }
-        .type-img .icon-box { color: #a855f7; background-color: #f3e8ff; }
-        .type-zip .icon-box { color: #f59e0b; background-color: #fffbeb; }
 
         .file-info { flex-grow: 1; }
         .file-name { 
@@ -201,15 +174,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            background-color: transparent;
+            /* تعديل: تلوين أيقونة التحميل */
+            color: var(--primary-color);
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
             transition: 0.2s;
         }
 
         .file-card:hover .download-btn {
-            background-color: #f1f5f9;
-            color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         /* رسائل الحالة */
@@ -238,10 +213,10 @@
     <header class="main-header">
         <div class="brand-logo">
             <div class="brand-icon-bg">
-                <i class="fas fa-layer-group"></i> </div>
+                <i class="fas fa-layer-group"></i>
+            </div>
             <div class="brand-text">
-                <h1>بصيرة</h1>
-                <span>المنصة الرقمية للملفات</span>
+                <h1>الإدارة الإلكترونية</h1>
             </div>
         </div>
 
@@ -252,11 +227,6 @@
     </header>
 
     <div class="container">
-        <div class="section-title">
-            <i class="far fa-clock"></i>
-            أحدث الملفات المرفوعة
-        </div>
-
         <ul class="file-list" id="fileListContainer">
             <li class="status-msg">
                 <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary-color);"></i>
@@ -306,15 +276,15 @@
             try {
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                function getFileStyle(filename) {
-                    if (!filename) return { icon: 'fa-file', class: 'type-default', label: 'ملف' };
+                function getFileIcon(filename) {
+                    if (!filename) return 'fa-file';
                     const ext = filename.split('.').pop().toLowerCase();
-                    if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'PDF' };
-                    if (['doc', 'docx'].includes(ext)) return { icon: 'fa-file-word', class: 'type-doc', label: 'Word' };
-                    if (['xls', 'xlsx'].includes(ext)) return { icon: 'fa-file-excel', class: 'type-xls', label: 'Excel' };
-                    if (['jpg', 'png', 'jpeg'].includes(ext)) return { icon: 'fa-file-image', class: 'type-img', label: 'Image' };
-                    if (['zip', 'rar'].includes(ext)) return { icon: 'fa-file-zipper', class: 'type-zip', label: 'Zip' };
-                    return { icon: 'fa-file', class: 'type-default', label: ext.toUpperCase() };
+                    if (['pdf'].includes(ext)) return 'fa-file-pdf';
+                    if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
+                    if (['xls', 'xlsx'].includes(ext)) return 'fa-file-excel';
+                    if (['jpg', 'png', 'jpeg'].includes(ext)) return 'fa-file-image';
+                    if (['zip', 'rar'].includes(ext)) return 'fa-file-zipper';
+                    return 'fa-file';
                 }
 
                 async function loadFiles() {
@@ -341,21 +311,22 @@
                         }
 
                         files.forEach(file => {
-                            const style = getFileStyle(file.name);
+                            const iconClass = getFileIcon(file.name);
                             const date = file.created_at ? new Date(file.created_at).toLocaleDateString('ar-EG') : 'بدون تاريخ';
                             const url = file.file_url || '#';
+                            const extLabel = file.name ? file.name.split('.').pop().toUpperCase() : 'ملف';
 
                             const htmlItem = `
-                                <li class="${style.class}">
+                                <li>
                                     <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">
                                         <div class="file-card">
                                             <div class="icon-box">
-                                                <i class="fas ${style.icon}"></i>
+                                                <i class="fas ${iconClass}"></i>
                                             </div>
                                             <div class="file-info">
                                                 <span class="file-name">${file.name || 'ملف بدون اسم'}</span>
                                                 <div class="file-meta-badges">
-                                                    <span class="badge">${style.label}</span>
+                                                    <span class="badge">${extLabel}</span>
                                                     <span class="badge" style="background:transparent; padding-left:0; color:#94a3b8">
                                                         <i class="far fa-calendar" style="margin-left:4px"></i>${date}
                                                     </span>
