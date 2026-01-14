@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مركز تحميل الملفات</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>مكتبة الملفات</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-bg: #f4f6f8;
-            --item-bg: #ffffff;
-            --hover-bg: #eef2f5;
-            --text-main: #333;
-            --text-sub: #777;
-            --border-color: #ddd;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary-color: #4a90e2;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-bg);
-            padding: 20px;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
+            padding: 40px 20px;
+            color: var(--text-primary);
         }
 
         .container {
@@ -30,209 +33,245 @@
             margin: 0 auto;
         }
 
-        h2 {
-            color: var(--text-main);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        .header-logo {
-            height: 40px;
-            width: auto;
-            margin-left: 15px;
+        .header h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
         }
 
+        .header p {
+            color: var(--text-secondary);
+        }
+
+        /* تنسيق قائمة الملفات */
         .file-list {
             list-style: none;
             padding: 0;
-            margin: 0;
-            background: var(--item-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-            min-height: 100px;
+            display: grid;
+            gap: 15px; /* مسافة بين العناصر */
         }
 
-        .file-link {
+        .file-item-link {
             text-decoration: none;
-            display: block;
             color: inherit;
+            display: block;
         }
 
-        .file-item {
+        .file-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.2s;
-            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
         }
 
-        .file-link:hover .file-item {
-            background-color: var(--hover-bg);
+        .file-card:hover {
+            transform: translateY(-3px); /* يرتفع للأعلى قليلاً */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: #e1e4e8;
         }
 
-        .file-item:last-child {
-            border-bottom: none;
-        }
-
-        .file-icon {
-            font-size: 24px;
+        /* مربع الأيقونة */
+        .icon-box {
             width: 50px;
             height: 50px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f0f0f0;
-            border-radius: 12px;
-            margin-left: 15px; 
-            color: #555;
+            font-size: 24px;
+            margin-left: 20px;
+            flex-shrink: 0;
         }
 
+        /* معلومات الملف */
         .file-info {
             flex-grow: 1;
-            display: flex;
-            flex-direction: column;
         }
 
         .file-name {
+            font-weight: 700;
             font-size: 16px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
+            display: block;
+            word-break: break-all; /* لكسر الأسماء الطويلة جداً */
         }
 
-        .file-type {
+        .file-meta {
             font-size: 13px;
-            color: var(--text-sub);
+            color: var(--text-secondary);
+            display: flex;
+            gap: 15px;
         }
 
-        .loading-text {
+        /* زر التحميل الجانبي */
+        .action-icon {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .file-card:hover .action-icon {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        /* --- ألوان الأيقونات حسب النوع --- */
+        
+        /* PDF - أحمر */
+        .type-pdf { background-color: #fadbd8; color: #e74c3c; }
+        
+        /* Word - أزرق */
+        .type-doc { background-color: #d6eaf8; color: #2980b9; }
+        
+        /* Excel - أخضر */
+        .type-xls { background-color: #d5f5e3; color: #27ae60; }
+        
+        /* Images - بنفسجي */
+        .type-img { background-color: #ebdef0; color: #8e44ad; }
+        
+        /* Zip - برتقالي */
+        .type-zip { background-color: #fdebd0; color: #d35400; }
+        
+        /* Code/Default - رمادي */
+        .type-default { background-color: #eceff1; color: #607d8b; }
+
+        /* رسالة التحميل */
+        .status-msg {
             text-align: center;
-            padding: 20px;
-            color: #888;
+            padding: 40px;
+            color: var(--text-secondary);
         }
-
-        /* ألوان الأيقونات */
-        .icon-pdf { color: #e74c3c; background-color: #fadbd8; }
-        .icon-word { color: #2980b9; background-color: #d6eaf8; }
-        .icon-image { color: #27ae60; background-color: #d5f5e3; }
-        .icon-code { color: #f39c12; background-color: #fdebd0; }
-        .icon-zip { color: #8e44ad; background-color: #ebdef0; }
 
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>
-            <img src="logo1.png" alt="شعار الموقع" class="header-logo">
-            مركز الملفات
-        </h2>
-        
+        <div class="header">
+            <h2><i class="fas fa-folder-open" style="color: #4a90e2;"></i> الملفات المتاحة</h2>
+            <p>تصفح وحمل الملفات من القائمة أدناه</p>
+        </div>
+
         <ul class="file-list" id="fileListContainer">
-            <li class="loading-text">جاري الاتصال بالسيرفر...</li>
+            <li class="status-msg">
+                <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                <br><br>جاري تحميل الملفات...
+            </li>
         </ul>
     </div>
 
     <script>
-        // 1. بيانات الاتصال الخاصة بك (تم إدراجها هنا)
+        // 1. إعداد Supabase
         const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
 
-        // إنشاء عميل Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // دالة مساعدة لتحديد نوع الملف
-        function getFileDetails(filename) {
-            if (!filename) return { typeName: "ملف", iconClass: "fa-file", colorClass: "" };
-            const extension = filename.split('.').pop().toLowerCase();
+        // 2. دالة ذكية لتحديد شكل الأيقونة ولونها بناءً على الامتداد
+        function getFileStyle(filename) {
+            if (!filename) return { icon: 'fa-file', class: 'type-default', label: 'ملف' };
             
-            let typeName = "ملف غير معروف";
-            let iconClass = "fa-file";
-            let colorClass = "";
+            const ext = filename.split('.').pop().toLowerCase();
 
-            switch (extension) {
-                case 'pdf': typeName = "ملف PDF"; iconClass = "fa-file-pdf"; colorClass = "icon-pdf"; break;
-                case 'doc': case 'docx': typeName = "مستند Word"; iconClass = "fa-file-word"; colorClass = "icon-word"; break;
-                case 'png': case 'jpg': case 'jpeg': typeName = "صورة " + extension.toUpperCase(); iconClass = "fa-file-image"; colorClass = "icon-image"; break;
-                case 'html': case 'js': case 'css': typeName = "كود برمجي"; iconClass = "fa-file-code"; colorClass = "icon-code"; break;
-                case 'zip': case 'rar': typeName = "ملف مضغوط"; iconClass = "fa-file-zipper"; colorClass = "icon-zip"; break;
-                default: typeName = "ملف " + extension.toUpperCase();
+            // قاموس الامتدادات
+            if (['pdf'].includes(ext)) {
+                return { icon: 'fa-file-pdf', class: 'type-pdf', label: 'ملف PDF' };
             }
-            return { typeName, iconClass, colorClass };
+            if (['doc', 'docx'].includes(ext)) {
+                return { icon: 'fa-file-word', class: 'type-doc', label: 'مستند Word' };
+            }
+            if (['xls', 'xlsx', 'csv'].includes(ext)) {
+                return { icon: 'fa-file-excel', class: 'type-xls', label: 'جدول Excel' };
+            }
+            if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) {
+                return { icon: 'fa-file-image', class: 'type-img', label: 'صورة' };
+            }
+            if (['zip', 'rar', '7z'].includes(ext)) {
+                return { icon: 'fa-file-zipper', class: 'type-zip', label: 'ملف مضغوط' };
+            }
+            
+            // الافتراضي
+            return { icon: 'fa-file', class: 'type-default', label: ext.toUpperCase() + ' ملف' };
         }
 
-        // دالة جلب البيانات وعرضها
-        async function fetchAndRenderFiles() {
-            const container = document.getElementById('fileListContainer');
-            
+        // 3. جلب البيانات وعرضها
+        async function loadFiles() {
+            const listContainer = document.getElementById('fileListContainer');
+
             try {
-                // جلب البيانات من جدول 'files' مع ترتيب تنازلي
                 let { data: files, error } = await supabase
                     .from('files')
-                    .select('name, created_at, file_url')
+                    .select('*')
                     .order('created_at', { ascending: false });
 
-                if (error) {
-                    console.error('Supabase Error:', error);
-                    throw error;
-                }
+                if (error) throw error;
 
-                container.innerHTML = '';
+                listContainer.innerHTML = ''; // مسح رسالة التحميل
 
-                if (!files || files.length === 0) {
-                    container.innerHTML = '<li class="loading-text">لا توجد ملفات في قاعدة البيانات حتى الآن.</li>';
+                if (files.length === 0) {
+                    listContainer.innerHTML = '<li class="status-msg">لا توجد ملفات حالياً.</li>';
                     return;
                 }
 
                 files.forEach(file => {
-                    const details = getFileDetails(file.name);
+                    // استخراج النمط المناسب للملف
+                    const style = getFileStyle(file.name);
                     
                     // تنسيق التاريخ
-                    let dateString = "تاريخ غير معروف";
-                    if (file.created_at) {
-                        dateString = new Date(file.created_at).toISOString().split('T')[0];
-                    }
+                    const date = new Date(file.created_at).toLocaleDateString('ar-EG');
                     
-                    // التعامل مع الرابط
-                    const linkUrl = file.file_url ? file.file_url : '#';
-                    const targetAttr = file.file_url ? 'target="_blank"' : '';
+                    // الرابط
+                    const url = file.file_url || '#';
 
-                    const li = document.createElement('li');
-                    
-                    li.innerHTML = `
-                        <a href="${linkUrl}" ${targetAttr} class="file-link">
-                            <div class="file-item">
-                                <div class="file-icon ${details.colorClass}">
-                                    <i class="fas ${details.iconClass}"></i>
+                    // إنشاء عنصر القائمة بتصميم البطاقة الجديد
+                    const htmlItem = `
+                        <li>
+                            <a href="${url}" target="_blank" class="file-item-link">
+                                <div class="file-card">
+                                    <div class="icon-box ${style.class}">
+                                        <i class="fas ${style.icon}"></i>
+                                    </div>
+                                    
+                                    <div class="file-info">
+                                        <span class="file-name">${file.name}</span>
+                                        <div class="file-meta">
+                                            <span><i class="far fa-file"></i> ${style.label}</span>
+                                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="action-icon">
+                                        <i class="fas fa-download"></i>
+                                    </div>
                                 </div>
-                                <div class="file-info">
-                                    <span class="file-name">${file.name}</span>
-                                    <span class="file-type">${details.typeName}</span>
-                                </div>
-                                <div style="color: #999; font-size: 12px;">
-                                    <i class="far fa-clock"></i> ${dateString}
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        </li>
                     `;
-                    container.appendChild(li);
+                    
+                    listContainer.innerHTML += htmlItem;
                 });
 
             } catch (err) {
-                console.error('General Error:', err);
-                container.innerHTML = `
-                    <li class="loading-text" style="color:red">
-                        حدث خطأ في تحميل البيانات!<br>
-                        <small>تأكد من إنشاء جدول 'files' وتفعيل سياسة RLS للقراءة (Select).</small>
+                console.error(err);
+                listContainer.innerHTML = `
+                    <li class="status-msg" style="color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i><br><br>
+                        حدث خطأ أثناء تحميل البيانات
                     </li>`;
             }
         }
 
-        // تشغيل الدالة عند بدء الصفحة
-        fetchAndRenderFiles();
+        // تشغيل الدالة
+        loadFiles();
     </script>
 </body>
 </html>
