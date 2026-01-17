@@ -12,7 +12,7 @@
     <style>
         /* 1. إعدادات المتغيرات والألوان */
         :root {
-            --bg-color: #FFFDF5;      /* لون كريمي فاتح (Eggshell/Cosmic Latte) */
+            --bg-color: #FFFDF5;      /* لون كريمي فاتح */
             --btn-color: #E3D8B4;     /* لون بيج/رملي ذهبي باهت */
             --text-color: #000000;    /* أسود نقي للنصوص والحدود */
             --footer-text: #808080;   /* رمادي للتذييل */
@@ -32,62 +32,56 @@
             color: var(--text-color);
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* ملء ارتفاع الشاشة */
-            direction: rtl; /* اتجاه النص للعربية */
+            min-height: 100vh;
+            direction: rtl;
         }
 
         /* 3. تنسيق الهيدر (الشعار) */
         header {
             padding: 20px;
-            display: flex;
-            justify-content: flex-end; /* محاذاة لليمين (لأن الاتجاه RTL فالنهاية هي اليسار، سنستخدم flex-start لليمين البصري إذا كان LTR، لكن مع RTL flex-end يعني اليسار. الطلب يقول Top-Right) */
-            /* تعديل: بما أن الصفحة عربية (RTL)، اليمين هو البداية (flex-start). الطلب يقول Top-Right. */
+            /* الشعار محدد بموضعه المطلق Absolute لذا لا نحتاج لخصائص flex هنا للتوجيه */
         }
 
-        /* لضمان أن الشعار في الزاوية اليمنى العليا بغض النظر عن اتجاه اللغة */
-        .logo-container {
+        .logo-img {
             position: absolute;
             top: 20px;
             right: 20px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            height: 50px; /* ارتفاع مناسب للشعار في الهيدر */
+            width: auto;  /* الحفاظ على أبعاد الصورة */
         }
 
         /* 4. تنسيق المحتوى الرئيسي (القائمة) */
         main {
-            flex: 1; /* يأخذ المساحة المتاحة لدفع الفوتر للأسفل */
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            gap: 20px; /* مسافة متساوية بين الأزرار */
-            margin-top: 60px; /* مساحة لعدم تداخل الشعار */
+            gap: 20px;
+            margin-top: 60px;
         }
 
         .menu-btn {
             width: 100%;
-            max-width: 350px; /* عرض مناسب للموبايل والويب */
+            max-width: 350px;
             padding: 18px;
             background-color: var(--btn-color);
             border: var(--border-width) solid var(--text-color);
             color: var(--text-color);
             font-family: 'Readex Pro', sans-serif;
-            font-weight: 700; /* خط عريض */
+            font-weight: 700;
             font-size: 1.1rem;
             text-align: center;
             cursor: pointer;
-            border-radius: 0; /* زوايا حادة (Sharp corners) */
+            border-radius: 0; /* زوايا حادة */
             transition: transform 0.1s ease, background-color 0.2s;
             text-decoration: none;
             display: block;
         }
 
-        /* تأثير بسيط عند الضغط أو التمرير */
         .menu-btn:hover {
-            background-color: #dccba0; /* تغميق بسيط جداً */
+            background-color: #dccba0;
         }
 
         .menu-btn:active {
@@ -98,7 +92,7 @@
         footer {
             text-align: center;
             padding: 20px;
-            margin-top: auto; /* يضمن بقاء الفوتر في الأسفل */
+            margin-top: auto;
         }
 
         .copyright {
@@ -111,7 +105,7 @@
 <body>
 
     <header>
-        <div class="logo-container">LOGO .PNG</div>
+        <img src="/linglogo.png" alt="Logo" class="logo-img">
     </header>
 
     <main id="lessons-container">
@@ -128,25 +122,16 @@
 
     <script>
         // 6. جافاسكريبت للتفاعل
-        
-        // دالة بسيطة لمحاكاة الانتقال للدرس
         function openLesson(lessonNumber) {
             console.log(`تم النقر على الدرس رقم: ${lessonNumber}`);
-            
-            // هنا يمكنك إضافة كود الانتقال الفعلي لصفحة أخرى
-            // مثال: window.location.href = 'lesson' + lessonNumber + '.html';
-            
-            // للتجربة الآن، سنقوم بإظهار رسالة تفاعلية
             alert(`جاري الانتقال إلى الدرس ${getArabicNumber(lessonNumber)}...`);
         }
 
-        // دالة مساعدة لتحويل الأرقام للنص العربي (لأغراض العرض فقط في التنبيه)
         function getArabicNumber(num) {
             const numbers = ["", "الأول", "الثاني", "الثالث", "الرابع", "الخامس"];
             return numbers[num] || num;
         }
 
-        // إضافة تأثير دخول بسيط عند تحميل الصفحة (Animation)
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.menu-btn');
             buttons.forEach((btn, index) => {
@@ -156,7 +141,7 @@
                     btn.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                     btn.style.opacity = '1';
                     btn.style.transform = 'translateY(0)';
-                }, index * 100); // تتابع زمني
+                }, index * 100);
             });
         });
     </script>
