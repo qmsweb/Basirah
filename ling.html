@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقرر اللسانيات 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. إعدادات المتغيرات والألوان */
+        :root {
+            --bg-color: #FFFDF5;      /* لون كريمي فاتح (Eggshell/Cosmic Latte) */
+            --btn-color: #E3D8B4;     /* لون بيج/رملي ذهبي باهت */
+            --text-color: #000000;    /* أسود نقي للنصوص والحدود */
+            --footer-text: #808080;   /* رمادي للتذييل */
+            --border-width: 1px;
+        }
+
+        /* 2. التنسيق العام (Reset & Layout) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Readex Pro', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* ملء ارتفاع الشاشة */
+            direction: rtl; /* اتجاه النص للعربية */
+        }
+
+        /* 3. تنسيق الهيدر (الشعار) */
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end; /* محاذاة لليمين (لأن الاتجاه RTL فالنهاية هي اليسار، سنستخدم flex-start لليمين البصري إذا كان LTR، لكن مع RTL flex-end يعني اليسار. الطلب يقول Top-Right) */
+            /* تعديل: بما أن الصفحة عربية (RTL)، اليمين هو البداية (flex-start). الطلب يقول Top-Right. */
+        }
+
+        /* لضمان أن الشعار في الزاوية اليمنى العليا بغض النظر عن اتجاه اللغة */
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 4. تنسيق المحتوى الرئيسي (القائمة) */
+        main {
+            flex: 1; /* يأخذ المساحة المتاحة لدفع الفوتر للأسفل */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 20px; /* مسافة متساوية بين الأزرار */
+            margin-top: 60px; /* مساحة لعدم تداخل الشعار */
+        }
+
+        .menu-btn {
+            width: 100%;
+            max-width: 350px; /* عرض مناسب للموبايل والويب */
+            padding: 18px;
+            background-color: var(--btn-color);
+            border: var(--border-width) solid var(--text-color);
+            color: var(--text-color);
+            font-family: 'Readex Pro', sans-serif;
+            font-weight: 700; /* خط عريض */
+            font-size: 1.1rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 0; /* زوايا حادة (Sharp corners) */
+            transition: transform 0.1s ease, background-color 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* تأثير بسيط عند الضغط أو التمرير */
+        .menu-btn:hover {
+            background-color: #dccba0; /* تغميق بسيط جداً */
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 5. تنسيق الفوتر (التذييل) */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto; /* يضمن بقاء الفوتر في الأسفل */
+        }
+
+        .copyright {
+            color: var(--footer-text);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">LOGO .PNG</div>
+    </header>
+
+    <main id="lessons-container">
+        <button class="menu-btn" onclick="openLesson(1)">الدرس الأول</button>
+        <button class="menu-btn" onclick="openLesson(2)">الدرس الثاني</button>
+        <button class="menu-btn" onclick="openLesson(3)">الدرس الثالث</button>
+        <button class="menu-btn" onclick="openLesson(4)">الدرس الرابع</button>
+        <button class="menu-btn" onclick="openLesson(5)">الدرس الخامس</button>
+    </main>
+
+    <footer>
+        <p class="copyright">جميع الحقوق محفوظة لـ مقرر اللسانيات 2026</p>
+    </footer>
+
+    <script>
+        // 6. جافاسكريبت للتفاعل
+        
+        // دالة بسيطة لمحاكاة الانتقال للدرس
+        function openLesson(lessonNumber) {
+            console.log(`تم النقر على الدرس رقم: ${lessonNumber}`);
+            
+            // هنا يمكنك إضافة كود الانتقال الفعلي لصفحة أخرى
+            // مثال: window.location.href = 'lesson' + lessonNumber + '.html';
+            
+            // للتجربة الآن، سنقوم بإظهار رسالة تفاعلية
+            alert(`جاري الانتقال إلى الدرس ${getArabicNumber(lessonNumber)}...`);
+        }
+
+        // دالة مساعدة لتحويل الأرقام للنص العربي (لأغراض العرض فقط في التنبيه)
+        function getArabicNumber(num) {
+            const numbers = ["", "الأول", "الثاني", "الثالث", "الرابع", "الخامس"];
+            return numbers[num] || num;
+        }
+
+        // إضافة تأثير دخول بسيط عند تحميل الصفحة (Animation)
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.menu-btn');
+            buttons.forEach((btn, index) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    btn.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, index * 100); // تتابع زمني
+            });
+        });
+    </script>
+</body>
+</html>
