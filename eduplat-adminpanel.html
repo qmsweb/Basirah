@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - رفع الملفات</title>
+    <title>لوحة تحكم الأرشيف</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,9 +17,9 @@
             --primary-hover: #1d4ed8;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e1;
+            --folder-color: #fbbf24;
             --success-color: #10b981;
-            --error-color: #ef4444;
         }
 
         body {
@@ -32,7 +32,7 @@
         }
 
         /* --- الهيدر --- */
-        .admin-header {
+        .main-header {
             background-color: var(--surface-color);
             border-bottom: 1px solid var(--border-color);
             padding: 0 2rem;
@@ -40,64 +40,64 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .brand-text h1 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
-            color: var(--primary-color);
             margin: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .back-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: 0.2s;
-        }
-        .back-link:hover { color: var(--primary-color); }
-
-        /* --- الحاوية --- */
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 0 20px;
+        /* --- الحاوية الرئيسية --- */
+        .container { 
+            max-width: 1000px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+            display: grid;
+            gap: 30px;
         }
 
+        /* --- بطاقة الرفع (لوحة التحكم) --- */
         .upload-card {
             background: var(--surface-color);
             border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             border: 1px solid var(--border-color);
         }
 
         .card-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--bg-body);
+            padding-bottom: 10px;
         }
-        .card-header h2 { margin: 0; font-size: 1.5rem; }
-        .card-header p { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
 
-        /* --- عناصر النموذج --- */
-        .form-group { margin-bottom: 20px; }
+        .card-header h2 { margin: 0; font-size: 1.2rem; color: var(--text-primary); }
+
+        .form-group { margin-bottom: 15px; }
         
         .form-label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         .form-input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid var(--border-color);
+            padding: 10px 15px;
             border-radius: 8px;
+            border: 2px solid var(--border-color);
             font-family: inherit;
-            font-size: 1rem;
             box-sizing: border-box;
             transition: 0.2s;
         }
@@ -105,55 +105,18 @@
         .form-input:focus {
             border-color: var(--primary-color);
             outline: none;
-            background-color: #f8fafc;
         }
 
-        .form-input[readonly] {
-            background-color: #f1f5f9;
-            color: var(--text-secondary);
-            cursor: not-allowed;
-        }
-
-        /* --- منطقة رفع الملف --- */
-        .file-upload-wrapper {
-            position: relative;
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .file-upload-wrapper:hover {
-            border-color: var(--primary-color);
-            background-color: #eff6ff;
-        }
-
-        .file-upload-input {
-            position: absolute;
-            left: 0; top: 0; width: 100%; height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-icon {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        /* --- الأزرار --- */
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
+        .btn-upload {
             background-color: var(--primary-color);
             color: white;
             border: none;
+            padding: 12px 25px;
             border-radius: 8px;
-            font-size: 1rem;
             font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
+            width: 100%;
             transition: 0.2s;
             display: flex;
             align-items: center;
@@ -161,197 +124,339 @@
             gap: 10px;
         }
 
-        .btn-submit:hover { background-color: var(--primary-hover); }
-        .btn-submit:disabled { background-color: var(--text-secondary); cursor: not-allowed; }
+        .btn-upload:hover { background-color: var(--primary-hover); }
+        .btn-upload:disabled { background-color: #94a3b8; cursor: not-allowed; }
+
+        /* --- شجرة الملفات --- */
+        .tree-container {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            min-height: 300px;
+        }
+
+        ul.tree-list {
+            list-style: none;
+            padding-right: 20px;
+            margin: 0;
+        }
+        ul.tree-list.root { padding-right: 0; }
+        .tree-item { margin: 6px 0; }
+
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            color: var(--text-primary);
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            transition: 0.2s;
+            user-select: none;
+        }
+        details > summary:hover { background-color: #e0f2fe; color: var(--primary-color); }
+        details > summary::-webkit-details-marker { display: none; }
+
+        .folder-icon {
+            color: var(--folder-color);
+            margin-left: 10px;
+            font-size: 1.2em;
+        }
+        details[open] > summary .fa-folder::before { content: "\f07c"; }
+
+        .file-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .file-link:hover {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+            color: var(--success-color);
+        }
+        .file-icon { margin-left: 10px; width: 20px; text-align: center; color: var(--text-secondary); }
+        .file-link:hover .file-icon { color: var(--success-color); }
 
         /* --- رسائل التنبيه --- */
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
-            font-size: 0.9rem;
-        }
+        .status-msg { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .alert { padding: 10px 15px; border-radius: 8px; margin-top: 15px; display: none; font-size: 0.9rem; }
         .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-
-        /* تلميح صغير */
-        .hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px; }
-
+        
+        .upload-progress {
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
 
-    <header class="admin-header">
+    <header class="main-header">
         <div class="brand-text">
-            <h1><i class="fas fa-cogs"></i> لوحة التحكم</h1>
+            <h1><i class="fas fa-network-wired"></i> لوحة الأرشيف الإلكتروني</h1>
         </div>
-        <a href="index.html" class="back-link"><i class="fas fa-arrow-right"></i> العودة للأرشيف</a>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+            <i class="fas fa-circle" style="color: #10b981; font-size: 10px;"></i> متصل
+        </div>
     </header>
 
     <div class="container">
+        
         <div class="upload-card">
             <div class="card-header">
-                <h2>رفع ملف جديد</h2>
-                <p>سيتم إضافة الملف للأرشيف الشجري تلقائياً</p>
+                <h2><i class="fas fa-cloud-upload-alt"></i> رفع ملف جديد</h2>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">اختر الملف</label>
+                <input type="file" id="fileInput" class="form-input" onchange="suggestPath()">
             </div>
 
-            <form id="uploadForm">
-                
-                <div class="form-group">
-                    <label class="form-label">اختر الملف</label>
-                    <div class="file-upload-wrapper" id="dropZone">
-                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <div id="fileLabel">اضغط هنا لاختيار ملف</div>
-                        <input type="file" id="fileInput" class="file-upload-input" required>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">مسار الملف (المجلد/اسم_الملف)</label>
+                <input type="text" id="filePathInput" class="form-input" placeholder="مثال: الإدارة/التقارير/تقرير_سنوي.pdf">
+                <small style="color: var(--text-secondary); font-size: 0.8rem;">استخدم علامة / لإنشاء مجلدات فرعية</small>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">مسار الملف (لإنشاء المجلدات)</label>
-                    <input type="text" id="fileNameInput" class="form-input" placeholder="مثال: الإدارة/التقارير/تقرير-2024.pdf" required>
-                    <div class="hint">استخدم العلامة (/) لإنشاء مجلدات فرعية.</div>
-                </div>
+            <button id="uploadBtn" class="btn-upload" onclick="handleUpload()">
+                <span>رفع وحفظ</span>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            <div class="upload-progress" id="progressBarContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">رابط الملف (يتم جلبه تلقائياً)</label>
-                    <div style="position: relative;">
-                        <input type="text" id="fileUrlInput" class="form-input" placeholder="سيظهر الرابط هنا بعد الرفع..." readonly>
-                        <i class="fas fa-link" style="position: absolute; left: 15px; top: 15px; color: var(--text-secondary);"></i>
-                    </div>
-                </div>
+            <div id="uploadAlert" class="alert"></div>
+        </div>
 
-                <button type="submit" id="submitBtn" class="btn-submit">
-                    <span>رفع وحفظ البيانات</span>
-                    <i class="fas fa-save"></i>
-                </button>
-
-                <div id="statusMessage" class="alert"></div>
-
-            </form>
+        <div id="treeWrapper" class="tree-container">
+            <div class="status-msg">
+                <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary-color);"></i>
+                <br><br>جاري تحميل الأرشيف...
+            </div>
         </div>
     </div>
 
     <script>
-        // إعداد Supabase (نفس المفاتيح الخاصة بك)
+        // إعدادات SUPABASE
         const SUPABASE_URL = 'https://bajprxgogzpnftphuxka.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJhanByeGdvZ3pwbmZ0cGh1eGthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzOTY5NDYsImV4cCI6MjA4Mzk3Mjk0Nn0.i2lYRllL-D79pSeWCT8WTbpnAE9DBhqUW8_2JrBedIU';
+        
+        // **هام**: يجب إنشاء Bucket في Supabase باسم 'documents' وجعله Public
+        const STORAGE_BUCKET = 'documents'; 
+
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // العناصر
-        const fileInput = document.getElementById('fileInput');
-        const fileNameInput = document.getElementById('fileNameInput');
-        const fileUrlInput = document.getElementById('fileUrlInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusMsg = document.getElementById('statusMessage');
-        const fileLabel = document.getElementById('fileLabel');
-        const dropZone = document.getElementById('dropZone');
+        // --- دوال مساعدة ---
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['pdf'].includes(ext)) return 'fa-file-pdf';
+            if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
+            if (['xls', 'xlsx', 'csv'].includes(ext)) return 'fa-file-excel';
+            if (['jpg', 'png', 'jpeg', 'gif'].includes(ext)) return 'fa-file-image';
+            if (['zip', 'rar'].includes(ext)) return 'fa-file-zipper';
+            return 'fa-file';
+        }
 
-        // تحديث اسم الملف عند الاختيار
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                fileLabel.textContent = file.name;
-                dropZone.style.borderColor = 'var(--primary-color)';
-                dropZone.style.backgroundColor = '#eff6ff';
-                
-                // اقتراح اسم تلقائي إذا كان الحقل فارغاً
-                if (!fileNameInput.value) {
-                    fileNameInput.value = file.name;
-                }
-            }
-        });
-
-        // دالة الرفع والحفظ
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function showAlert(msg, type = 'success') {
+            const el = document.getElementById('uploadAlert');
+            el.style.display = 'block';
+            el.className = `alert ${type === 'success' ? 'alert-success' : 'alert-error'}`;
+            el.innerHTML = type === 'success' 
+                ? `<i class="fas fa-check-circle"></i> ${msg}`
+                : `<i class="fas fa-exclamation-circle"></i> ${msg}`;
             
+            setTimeout(() => { el.style.display = 'none'; }, 5000);
+        }
+
+        // --- اقتراح المسار عند اختيار ملف ---
+        function suggestPath() {
+            const fileInput = document.getElementById('fileInput');
+            const pathInput = document.getElementById('filePathInput');
+            if (fileInput.files.length > 0) {
+                // نضع اسم الملف في الحقل بشكل افتراضي
+                pathInput.value = "عام/" + fileInput.files[0].name;
+            }
+        }
+
+        // --- منطق الرفع ---
+        async function handleUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const pathInput = document.getElementById('filePathInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressBarContainer');
+
+            if (fileInput.files.length === 0) {
+                showAlert('يرجى اختيار ملف أولاً', 'error');
+                return;
+            }
+            if (!pathInput.value.trim()) {
+                showAlert('يرجى تحديد مسار الملف', 'error');
+                return;
+            }
+
             const file = fileInput.files[0];
-            const pathName = fileNameInput.value.trim(); // الاسم الذي سيظهر في الشجرة
-
-            if (!file) {
-                showAlert('الرجاء اختيار ملف', 'error');
-                return;
-            }
-            if (!pathName) {
-                showAlert('الرجاء كتابة اسم الملف أو المسار', 'error');
-                return;
-            }
-
-            setLoading(true);
+            const fullPath = pathInput.value.trim();
+            
+            // واجهة المستخدم: بدء التحميل
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '30%';
 
             try {
-                // 1. رفع الملف إلى Supabase Storage (Bucket: uploads)
-                // نستخدم Timestamp لتجنب تكرار الأسماء في التخزين
-                const storagePath = `public/${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+                // 1. رفع الملف إلى Storage
+                // ملاحظة: نقوم بمسح المسار ليكون مناسباً للـ Storage (بدون حروف خاصة إن أمكن، لكن Supabase يدعم العربية)
+                const storagePath = `uploads/${Date.now()}_${file.name}`; // اسم فريد لتجنب التكرار في الـ Storage
                 
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('uploads')
+                const { data: storageData, error: storageError } = await supabase.storage
+                    .from(STORAGE_BUCKET)
                     .upload(storagePath, file);
 
-                if (uploadError) throw uploadError;
+                if (storageError) throw new Error("فشل رفع الملف للسحابة: " + storageError.message);
 
-                // 2. جلب الرابط العام (Public URL)
+                progressBar.style.width = '70%';
+
+                // 2. الحصول على الرابط العام
                 const { data: urlData } = supabase.storage
-                    .from('uploads')
+                    .from(STORAGE_BUCKET)
                     .getPublicUrl(storagePath);
 
-                const publicUrl = urlData.publicUrl;
+                const publicURL = urlData.publicUrl;
 
-                // عرض الرابط في الخانة (حسب طلبك)
-                fileUrlInput.value = publicUrl;
-
-                // 3. حفظ البيانات في جدول قاعدة البيانات (files)
-                // هذا الجدول هو الذي تقرأ منه صفحة الشجرة
+                // 3. حفظ البيانات في قاعدة البيانات
                 const { error: dbError } = await supabase
                     .from('files')
-                    .insert([
-                        { 
-                            name: pathName,    // الاسم مع المسار (مثل: مجلد/ملف.pdf)
-                            file_url: publicUrl // الرابط الذي تم جلبه
-                        }
-                    ]);
+                    .insert({ 
+                        name: fullPath, // الاسم الذي سيظهر في الشجرة
+                        file_url: publicURL 
+                    });
 
-                if (dbError) throw dbError;
+                if (dbError) throw new Error("فشل حفظ البيانات: " + dbError.message);
 
-                showAlert('تم رفع الملف وحفظه بنجاح!', 'success');
+                progressBar.style.width = '100%';
+                showAlert('تم رفع الملف وحفظه بنجاح!');
                 
-                // إعادة تعيين النموذج بعد ثانيتين
-                setTimeout(() => {
-                    document.getElementById('uploadForm').reset();
-                    fileLabel.textContent = 'اضغط هنا لاختيار ملف';
-                    fileUrlInput.value = '';
-                    setLoading(false);
-                    dropZone.style = '';
-                }, 2000);
+                // إعادة تعيين النموذج
+                fileInput.value = '';
+                pathInput.value = '';
+                
+                // تحديث الشجرة
+                loadFilesAsTree();
 
-            } catch (error) {
-                console.error(error);
-                showAlert('حدث خطأ: ' + error.message, 'error');
-                setLoading(false);
-            }
-        });
-
-        // دوال مساعدة
-        function showAlert(msg, type) {
-            statusMsg.style.display = 'block';
-            statusMsg.textContent = msg;
-            if (type === 'success') {
-                statusMsg.className = 'alert alert-success';
-            } else {
-                statusMsg.className = 'alert alert-error';
+            } catch (err) {
+                console.error(err);
+                showAlert(err.message, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<span>رفع وحفظ</span> <i class="fas fa-arrow-up"></i>';
+                setTimeout(() => { progressContainer.style.display = 'none'; progressBar.style.width = '0'; }, 2000);
             }
         }
 
-        function setLoading(isLoading) {
-            if (isLoading) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
-            } else {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>رفع وحفظ البيانات</span><i class="fas fa-save"></i>';
+        // --- منطق بناء الشجرة (نفس الكود السابق مع تحسينات) ---
+        function buildHierarchy(files) {
+            const root = {};
+            files.forEach(file => {
+                const parts = (file.name || 'بدون اسم').split('/');
+                const fileName = parts.pop();
+                let currentLevel = root;
+                parts.forEach(folderName => {
+                    if (!currentLevel[folderName]) {
+                        currentLevel[folderName] = { __type: 'folder', __children: {} };
+                    }
+                    currentLevel = currentLevel[folderName].__children;
+                });
+                if (!currentLevel['__files']) currentLevel['__files'] = [];
+                currentLevel['__files'].push({ ...file, displayName: fileName });
+            });
+            return root;
+        }
+
+        function renderTreeHTML(node, isRoot = false) {
+            let html = `<ul class="tree-list ${isRoot ? 'root' : ''}">`;
+            
+            // المجلدات
+            for (const key in node) {
+                if (key === '__files') continue;
+                const folder = node[key];
+                if (folder.__type === 'folder') {
+                    html += `
+                        <li class="tree-item">
+                            <details open> 
+                                <summary>
+                                    <i class="fas fa-folder folder-icon"></i>
+                                    ${key}
+                                </summary>
+                                ${renderTreeHTML(folder.__children)}
+                            </details>
+                        </li>`;
+                }
+            }
+            // الملفات
+            if (node['__files']) {
+                node['__files'].forEach(file => {
+                    const icon = getFileIcon(file.name);
+                    const url = file.file_url || '#';
+                    html += `
+                        <li class="tree-item">
+                            <a href="${url}" target="_blank" class="file-link">
+                                <i class="far ${icon} file-icon"></i>
+                                <span>${file.displayName}</span>
+                            </a>
+                        </li>`;
+                });
+            }
+            html += `</ul>`;
+            return html;
+        }
+
+        async function loadFilesAsTree() {
+            const wrapper = document.getElementById('treeWrapper');
+            try {
+                let { data: files, error } = await supabase
+                    .from('files')
+                    .select('*')
+                    .order('name', { ascending: true });
+
+                if (error) throw error;
+                wrapper.innerHTML = '';
+                if (!files || files.length === 0) {
+                    wrapper.innerHTML = `<div class="status-msg">لا توجد ملفات في الأرشيف حالياً</div>`;
+                    return;
+                }
+                const treeData = buildHierarchy(files);
+                wrapper.innerHTML = renderTreeHTML(treeData, true);
+
+            } catch (err) {
+                wrapper.innerHTML = `<div class="alert alert-error">فشل جلب البيانات: ${err.message}</div>`;
             }
         }
+
+        // التشغيل المبدئي
+        loadFilesAsTree();
+
     </script>
 </body>
 </html>
