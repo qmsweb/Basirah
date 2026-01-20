@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صوّب | تحدي التصحيح اللغوي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6366f1; /* نيلي عصري */
+            --secondary-color: #8b5cf6; /* بنفسجي */
+            --success-color: #10b981; /* أخضر زمردي */
+            --error-color: #ef4444; /* أحمر */
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* رأس البطاقة */
+        .header {
+            background: linear-gradient(to left, var(--primary-color), var(--secondary-color));
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .score-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+        }
+
+        /* منطقة السؤال */
+        .game-area {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .instruction {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .sentence-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        /* الكلمات القابلة للنقر */
+        .word-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            top: 0;
+        }
+
+        .word-btn:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        .word-btn:active {
+            transform: translateY(0);
+        }
+
+        /* حالات الإجابة */
+        .word-btn.correct {
+            background: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+            animation: bounce 0.5s;
+            pointer-events: none; /* منع النقر مرة أخرى */
+        }
+
+        .word-btn.wrong {
+            background: var(--error-color);
+            color: white;
+            border-color: var(--error-color);
+            animation: shake 0.5s;
+        }
+
+        /* منطقة التغذية الراجعة */
+        .feedback-panel {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none; /* مخفي افتراضياً */
+            animation: slideUp 0.4s ease-out;
+            text-align: right;
+        }
+
+        .feedback-title {
+            color: #166534;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-explanation {
+            color: #14532d;
+            line-height: 1.6;
+        }
+
+        /* زر التالي */
+        .next-btn {
+            background: var(--text-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            display: none; /* مخفي حتى الحل */
+            width: 100%;
+        }
+
+        .next-btn:hover {
+            background: black;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* شريط التقدم */
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>منصة صوّب 🎯</h1>
+            <div class="score-badge">النقاط: <span id="score">0</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        </div>
+
+        <div class="game-area">
+            <p class="instruction">اضغط على الكلمة التي تحتوي على خطأ لغوي:</p>
+            
+            <div class="sentence-container" id="sentence-box">
+                </div>
+
+            <div class="feedback-panel" id="feedback">
+                <div class="feedback-title">✅ أحسنت! إجابة صحيحة</div>
+                <div class="feedback-explanation" id="explanation-text">
+                    التصحيح هو "..." لأن ...
+                </div>
+            </div>
+
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">السؤال التالي ⬅️</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. قاعدة البيانات (يمكنك إضافة المزيد من الأسئلة هنا)
+        const questions = [
+            {
+                words: ["كان", "المعلمين", "واقفون", "في", "الساحة"],
+                errorIndex: 1, // ترتيب الكلمة الخطأ (تبدأ من 0)
+                correctWord: "المعلمون",
+                explanation: "لأنها اسم كان مرفوع وعلامة رفعه الواو لأنه جمع مذكر سالم."
+            },
+            {
+                words: ["لم", "يذهبون", "الطلاب", "إلى", "الرحلة"],
+                errorIndex: 1,
+                correctWord: "يذهبوا",
+                explanation: "الفعل المضارع مجزوم بـ (لم) وعلامة جزمه حذف النون لأنه من الأفعال الخمسة."
+            },
+            {
+                words: ["مررتُ", "بأخيكَ", "فأكرمته", "إكراماً", "كبير"],
+                errorIndex: 4,
+                correctWord: "كبيراً",
+                explanation: "لأنها نعت للمفعول المطلق (إكراماً) منصوب وعلامة نصبه الفتحة."
+            },
+            {
+                words: ["إن", "الفتاتان", "مهذبتان"],
+                errorIndex: 1,
+                correctWord: "الفتاتين",
+                explanation: "لأنها اسم (إن) منصوب وعلامة نصبه الياء لأنه مثنى."
+            }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // عناصر الصفحة
+        const sentenceBox = document.getElementById('sentence-box');
+        const feedbackPanel = document.getElementById('feedback');
+        const explanationText = document.getElementById('explanation-text');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreEl = document.getElementById('score');
+        const progressFill = document.getElementById('progress');
+
+        // دالة تشغيل السؤال
+        function loadQuestion() {
+            isAnswered = false;
+            const q = questions[currentQIndex];
+            
+            // تنظيف الشاشة
+            sentenceBox.innerHTML = '';
+            feedbackPanel.style.display = 'none';
+            nextBtn.style.display = 'none';
+            
+            // تحديث شريط التقدم
+            const progress = ((currentQIndex) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            // إنشاء أزرار الكلمات
+            q.words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.innerText = word;
+                span.className = 'word-btn';
+                // إضافة حدث النقر
+                span.onclick = () => checkAnswer(index, span);
+                sentenceBox.appendChild(span);
+            });
+        }
+
+        // دالة التحقق من الإجابة
+        function checkAnswer(selectedIndex, element) {
+            if (isAnswered) return; // منع الضغط المتكرر
+
+            const q = questions[currentQIndex];
+
+            if (selectedIndex === q.errorIndex) {
+                // إجابة صحيحة
+                element.classList.add('correct');
+                score += 10;
+                scoreEl.innerText = score;
+                showFeedback(true, q);
+                playSound('success');
+            } else {
+                // إجابة خاطئة
+                element.classList.add('wrong');
+                // نقوم بتلوين الإجابة الصحيحة تلقائياً للمساعدة
+                sentenceBox.children[q.errorIndex].classList.add('correct');
+                showFeedback(false, q);
+                playSound('error');
+            }
+            
+            isAnswered = true;
+            nextBtn.style.display = 'block';
+        }
+
+        // دالة عرض التغذية الراجعة
+        function showFeedback(isSuccess, q) {
+            feedbackPanel.style.display = 'block';
+            const title = feedbackPanel.querySelector('.feedback-title');
+            
+            if (isSuccess) {
+                feedbackPanel.style.borderColor = '#bbf7d0';
+                feedbackPanel.style.background = '#f0fdf4';
+                title.innerHTML = '✅ أحسنت! اكتشاف دقيق';
+                title.style.color = '#166534';
+            } else {
+                feedbackPanel.style.borderColor = '#fecaca';
+                feedbackPanel.style.background = '#fef2f2';
+                title.innerHTML = '❌ خطأ.. الصواب هو: ' + q.correctWord;
+                title.style.color = '#991b1b';
+            }
+
+            explanationText.innerHTML = `<strong>السبب:</strong> ${q.explanation}`;
+        }
+
+        // الانتقال للسؤال التالي
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                // نهاية اللعبة
+                sentenceBox.innerHTML = `<h2 style="color:var(--primary-color)">🎉 انتهت التحديات! نتيجتك: ${score}</h2>`;
+                nextBtn.style.display = 'none';
+                feedbackPanel.style.display = 'none';
+                progressFill.style.width = '100%';
+            }
+        }
+
+        // مؤثرات صوتية بسيطة (اختياري)
+        function playSound(type) {
+            // يمكن إضافة أصوات هنا لاحقاً
+        }
+
+        // تشغيل أول سؤال عند التحميل
+        loadQuestion();
+
+    </script>
+</body>
+</html>
