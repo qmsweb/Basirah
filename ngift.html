@@ -19,7 +19,6 @@
 
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            /* تم تحديث عائلة الخط */
             font-family: 'IBM Plex Sans Arabic', sans-serif;
             display: flex;
             justify-content: center;
@@ -30,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* الحاوية الرئيسية */
         .card-container {
             background-color: #ffffff;
             width: 100%;
@@ -42,7 +40,6 @@
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* الجزء العلوي (الغلاف) */
         .cover-layer {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
@@ -68,13 +65,23 @@
             margin-bottom: 10px;
         }
 
+        /* تنسيق خاص للاسم المجلوب */
+        .recipient-name {
+            display: block;
+            font-size: 20px;
+            margin-top: 5px;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
         .cover-subtitle {
             font-size: 16px;
             opacity: 0.9;
             font-weight: 300;
+            margin-top: 15px;
         }
 
-        /* زر الفتح */
         .open-btn {
             background: #ffffff;
             color: var(--primary-color);
@@ -100,7 +107,6 @@
             transform: scale(0.95);
         }
 
-        /* المحتوى المخفي */
         .hidden-content {
             background: #fff;
             max-height: 0;
@@ -112,7 +118,6 @@
             text-align: center;
         }
 
-        /* حالة الفتح */
         .card-container.active .cover-layer {
             border-radius: 30px 30px 0 0;
             padding: 30px 20px;
@@ -126,7 +131,6 @@
             transform: translateY(0);
         }
 
-        /* عناصر المحتوى الداخلي */
         .congrats-text {
             color: var(--primary-color);
             font-size: 22px;
@@ -141,7 +145,6 @@
             margin-bottom: 30px;
         }
 
-        /* تصميم التذكرة/الكوبون */
         .ticket {
             background: #f8f9fa;
             border: 2px dashed #b2bec3;
@@ -187,7 +190,7 @@
         .logo-area {
             margin-top: 30px;
             opacity: 0.7;
-            max-width: 100px; /* تحديد العرض لضمان التناسق */
+            max-width: 100px;
             height: auto;
             filter: grayscale(100%);
             transition: 0.3s;
@@ -211,7 +214,10 @@
         
         <div class="cover-layer" id="headerSection">
             <span class="cover-icon">🎁</span>
-            <h1 class="cover-title">مبارك النجاح!</h1>
+            <h1 class="cover-title">
+                مبارك النجاح!
+                <span id="nameDisplay" class="recipient-name"></span>
+            </h1>
             <p class="cover-subtitle" id="subTitle">لديك رسالة خاصة وهدية بانتظارك</p>
             <button class="open-btn" onclick="revealMessage()">اضغط هنا للفتح</button>
         </div>
@@ -251,20 +257,42 @@
     </div>
 
     <script>
+        // 1. تشغيل الكود فور تحميل الصفحة لجلب الاسم
+        document.addEventListener('DOMContentLoaded', async () => {
+            // استخراج الرقم من الرابط ?i=5
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('i');
+
+            if (userId) {
+                try {
+                    // جلب ملف الـ JSON
+                    const response = await fetch('giftname.json');
+                    const users = await response.json();
+                    
+                    // البحث عن الشخص صاحب الرقم المطابق
+                    // == تستخدم للمقارنة حتى لو كان الرقم نصاً في الرابط ورقماً في الملف
+                    const user = users.find(u => u.id == userId); 
+
+                    if (user) {
+                        // عرض الاسم مع إضافة "يا" قبله
+                        document.getElementById('nameDisplay').textContent = `يا ${user.name}`;
+                    }
+                } catch (error) {
+                    console.error('حدث خطأ في جلب البيانات:', error);
+                }
+            }
+        });
+
+        // 2. دالة فتح الرسالة (نفس السابقة)
         function revealMessage() {
             const card = document.getElementById('mainCard');
             const btn = document.querySelector('.open-btn');
             const subTitle = document.getElementById('subTitle');
             const icon = document.querySelector('.cover-icon');
 
-            // تفعيل الكلاس الذي يفتح الكارد
             card.classList.add('active');
-
-            // إخفاء الزر والعناصر غير الضرورية
             btn.style.display = 'none';
             subTitle.style.display = 'none';
-            
-            // تغيير الأيقونة العلوية
             icon.innerHTML = '🎉';
         }
     </script>
