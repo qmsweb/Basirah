@@ -1,297 +1,153 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta property="og:title" content="مبارك لك النجاح!">
-    <meta property="og:description" content="لديك زاجل خاص بانتظارك، اضغط للتفاصيل">
-    <meta property="og:image" content="https://www.basirah.me/logo/invite-cover.png">
-    <meta property="og:url" content="https://www.basirah.me/">
-    <meta property="og:type" content="website">
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مبارك النجاح</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تهنئة واستلام زاجل</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --primary-color: #0d47a1; /* أزرق داكن */
-            --secondary-color: #42a5f5; /* أزرق فاتح */
-            --bg-light: #f8fbfb;
-            --text-dark: #333;
-            --shadow-md: 0 10px 25px rgba(13, 71, 161, 0.15);
-            --radius: 16px;
-        }
-
-        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
         body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background-color: #f4f4f9;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            min-height: 100dvh; 
-            padding: 15px;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* --- تنسيق الهدية --- */
-        .envelope-stage {
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.3s ease;
-            z-index: 2;
+        .card {
+            background-color: #ffffff;
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .envelope-circle {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, var(--primary-color), #002171);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(13, 71, 161, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .envelope-circle i {
-            font-size: 50px;
-            color: #fff;
-        }
-
-        .click-hint {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        /* --- تنسيق البطاقة --- */
-        .invitation-container {
-            background: #ffffff;
-            border-radius: var(--radius);
-            padding: 40px 30px;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
             text-align: center;
-            width: 100%;
-            max-width: 450px;
-            border: 1px solid rgba(13, 71, 161, 0.05);
-            box-shadow: var(--shadow-md);
-            display: none; 
-            opacity: 0;
-            transform: scale(0.95);
-            margin: auto;
+            border: 1px solid #e1e1e1;
         }
 
-        .invitation-container.show {
-            display: block;
-            animation: popUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        .header {
+            background-color: #2c3e50; /* لون داكن وفخم */
+            color: #ffffff;
+            padding: 30px 20px;
         }
 
-        .card-icon {
-            color: var(--secondary-color);
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .invitation-title {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            margin: 0 0 5px;
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
             font-weight: 700;
         }
 
-        .guest-name {
-            color: #002171;
-            font-size: 1.4rem;
-            margin: 5px 0 15px;
-            font-weight: 600;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .guest-name::after {
-            content: '';
-            display: block;
-            width: 50%;
-            height: 3px;
-            background-color: var(--secondary-color);
-            margin: 5px auto 0;
-            border-radius: 2px;
-            opacity: 0.5;
+        .content {
+            padding: 30px 25px;
+            color: #333;
         }
 
-        .invitation-text {
+        .quote {
+            font-size: 16px;
+            line-height: 1.8;
             color: #555;
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        /* --- تنسيق تفاصيل الموقع والوقت --- */
-        .details-box {
-            background-color: #eef7ff; /* خلفية زرقاء فاتحة جداً */
+        .highlight {
+            color: #d35400; /* لون مميز للزاجل */
+            font-weight: 600;
+        }
+
+        .location-box {
+            background-color: #f9f9f9;
             border-radius: 12px;
             padding: 15px;
             margin: 20px 0;
-            text-align: right;
-            border-right: 4px solid var(--primary-color);
+            border: 1px dashed #ccc;
         }
 
-        .detail-row {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            color: #444;
-        }
-
-        .detail-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .detail-row i {
-            color: var(--primary-color);
-            width: 25px;
-            margin-top: 4px; /* لضبط المحاذاة مع النص */
-            margin-left: 10px;
-            font-size: 1.1rem;
-        }
-
-        .time-group {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .signature {
-            margin-top: 25px;
+        .location-title {
             font-weight: 700;
-            color: var(--primary-color);
-            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 18px;
         }
 
-        /* --- Animations --- */
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(13, 71, 161, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0); }
+        .hours-section {
+            margin-top: 15px;
+            font-size: 14px;
         }
 
-        @keyframes popUp {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .hours-label {
+            background-color: #e8f4f8;
+            color: #2980b9;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
         }
 
-        @keyframes fadeOut {
-            to { opacity: 0; transform: scale(1.2); pointer-events: none; }
+        .hours-text {
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
         }
 
-        /* --- Media Queries --- */
-        @media (max-width: 480px) {
-            .invitation-container { padding: 30px 20px; }
-            .invitation-title { font-size: 1.5rem; }
-            .guest-name { font-size: 1.2rem; }
-            .invitation-text { font-size: 0.9rem; }
-            .details-box { font-size: 0.85rem; }
+        .footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .logo {
+            max-width: 150px; /* التحكم بحجم الشعار */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .closing {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="envelope-stage" id="envelopeBtn">
-        <div class="envelope-circle">
-            <i class="fas fa-dove"></i>
-        </div>
-        <span class="click-hint">لديك زاجل.. اضغط لاستلامه</span>
-    </div>
-
-    <div class="invitation-container" id="inviteCard">
-        <div class="card-icon">
-            <i class="fas fa-medal"></i>
+    <div class="card">
+        <div class="header">
+            <h1>مبارك لك النجاح</h1>
         </div>
         
-        <h1 class="invitation-title">مبارك النجاح</h1>
-        <h2 class="guest-name" id="guestName">...</h2>
-        
-        <p class="invitation-text">
-            لقد وصل صدى نجاحك إلى عنان السماء قبل أن يصلنا الخبر.<br>
-            نسبةٌ تليقُ بهمةٍ لا تعرفُ المستحيل، فهنيئًا لك القمة.
-            <br><br>
-            واحتفاءً بهذا الإنجاز، بانتظارك <strong>"زاجل"</strong> خاص نأمل منك التفضل باستلامه.
-        </p>
-
-        <div class="details-box">
-            <div class="detail-row">
-                <i class="fas fa-location-dot"></i>
-                <span><strong>الموقع:</strong> التسعينيات كافيه</span>
+        <div class="content">
+            <div class="quote">
+                <strong>لقد وصل صدى نجاحك إلى عنان السماء قبل أن يصلنا الخبر.</strong><br>
+                نسبةٌ تليقُ بهمةٍ لا تعرفُ المستحيل، فهنيئًا لك القمة.
             </div>
-            
-            <div class="detail-row">
-                <i class="fas fa-clock"></i>
-                <div class="time-group">
-                    <span><strong>الصباح:</strong> 7:30 - 12:30 م</span>
-                    <span><strong>المساء:</strong> 3:00 - 11:00 م</span>
+
+            <p>
+                واحتفاءً بك، <span class="highlight">لديك زاجل بانتظارك</span> تفضل باستلامه من:
+            </p>
+
+            <div class="location-box">
+                <div class="location-title">📍 التسعينيات كافيه</div>
+                
+                <div class="hours-section">
+                    <span class="hours-label">أوقات الدوام للاستلام</span>
+                    <span class="hours-text">الصباح: 7:30 ص - 12:30 م</span>
+                    <span class="hours-text">المساء: 3:00 م - 11:00 م</span>
                 </div>
             </div>
         </div>
 
-        <div class="signature">
-            كل التوفيق لك،<br>
-            <span style="font-weight: 400; font-size: 0.9em; color: #555;">جاسم الفارسي</span>
+        <div class="footer">
+            <p class="closing">كل التوفيق لك،</p>
+            <img src="logo/jassim.png" alt="جاسم الفارسي" class="logo">
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const envelopeBtn = document.getElementById('envelopeBtn');
-            const inviteCard = document.getElementById('inviteCard');
-            const guestNameElement = document.getElementById('guestName');
-
-            // جلب الاسم من الرابط ?id=1 أو استخدام افتراضي
-            const urlParams = new URLSearchParams(window.location.search);
-            const guestId = urlParams.get('id') || '1';
-
-            // محاكاة جلب البيانات (يمكنك تعديل الرابط لملف json الحقيقي)
-            fetch('guests.json')
-                .then(response => response.json())
-                .then(data => {
-                    const guest = data.guests.find(g => g.id === guestId);
-                    if (guest) {
-                        guestNameElement.textContent = guest.name;
-                    } else {
-                        guestNameElement.textContent = "المتميز دائماً";
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    guestNameElement.textContent = "المتميز دائماً";
-                });
-
-            envelopeBtn.addEventListener('click', function() {
-                this.style.animation = 'fadeOut 0.4s forwards';
-                setTimeout(() => {
-                    this.style.display = 'none';
-                    inviteCard.classList.add('show');
-                }, 300);
-            });
-        });
-    </script>
 </body>
 </html>
