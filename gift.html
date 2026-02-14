@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta property="og:title" content="لقد وصلتك هدية خاصة!">
+    <meta property="og:description" content="لديك هدية خاصة، اضغط لفتحها">
+    <meta property="og:image" content="https://www.basirah.me/logo/invite-cover.jpg">
+    <meta property="og:url" content="https://www.basirah.me/">
+    <meta property="og:type" content="website">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>هدية خاصة</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* --- تم تغيير الألوان إلى الأزرق --- */
+            --primary-color: #0d47a1; /* أزرق داكن */
+            --secondary-color: #42a5f5; /* أزرق فاتح */
+            --bg-light: #f8fbfb;
+            --text-dark: #333;
+            /* تحديث لون الظل ليتناسب مع الأزرق */
+            --shadow-md: 0 10px 25px rgba(13, 71, 161, 0.15);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh; 
+            padding: 15px;
+        }
+
+        /* --- تنسيق الهدية (بدلاً من الظرف) --- */
+        .envelope-stage {
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .envelope-circle {
+            width: 120px;
+            height: 120px;
+            /* تدرج لوني أزرق */
+            background: linear-gradient(135deg, var(--primary-color), #002171);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(13, 71, 161, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .envelope-circle i {
+            font-size: 50px;
+            color: #fff;
+        }
+
+        .click-hint {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* --- تنسيق بطاقة الدعوة --- */
+        .invitation-container {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 50px 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(13, 71, 161, 0.05);
+            box-shadow: var(--shadow-md);
+            display: none; 
+            opacity: 0;
+            transform: scale(0.95);
+            margin: auto;
+        }
+
+        .invitation-container.show {
+            display: block;
+            animation: popUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .card-icon {
+            color: var(--secondary-color);
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .invitation-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+
+        .guest-name {
+            color: #002171; /* لون نص أزرق غامق */
+            font-size: 1.5rem;
+            margin: 10px 0 20px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            word-wrap: break-word;
+        }
+        
+        .guest-name::after {
+            content: '';
+            display: block;
+            width: 40%;
+            height: 3px;
+            background-color: var(--secondary-color);
+            margin: 5px auto 0;
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+
+        .invitation-text {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* --- Animations --- */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(13, 71, 161, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0); }
+        }
+
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: scale(1.2); pointer-events: none; }
+        }
+
+        /* --- Media Queries --- */
+        @media (max-width: 480px) {
+            .invitation-container {
+                padding: 30px 20px;
+                max-width: 95%;
+            }
+            
+            .invitation-title {
+                font-size: 1.7rem;
+            }
+
+            .guest-name {
+                font-size: 1.3rem;
+            }
+
+            .invitation-text {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+            
+            .envelope-circle {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .envelope-circle i {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="envelope-stage" id="envelopeBtn">
+        <div class="envelope-circle">
+            <i class="fas fa-gift"></i>
+        </div>
+        <span class="click-hint">اضغط لفتح الهدية</span>
+    </div>
+
+    <div class="invitation-container" id="inviteCard">
+        <div class="card-icon">
+            <i class="fas fa-gift"></i>
+        </div>
+        <h1 class="invitation-title">دعوة خاصة</h1>
+        
+        <h2 class="guest-name" id="guestName">...</h2>
+        
+        <p class="invitation-text">
+            يسعدنا دعوتكم لحضور إطلاق منصة "بَيْن"<br>
+            ضمن برنامج احتفال جامعة الشرقية باليوم العالمي للغة العربية<br>
+            يوم الإثنين 22 ديسمبر 2025<br>
+            في تمام الساعة 9:00 صباحًا
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const envelopeBtn = document.getElementById('envelopeBtn');
+            const inviteCard = document.getElementById('inviteCard');
+            const guestNameElement = document.getElementById('guestName');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestId = urlParams.get('id') || '1';
+
+            fetch('guests.json')
+                .then(response => response.json())
+                .then(data => {
+                    const guest = data.guests.find(g => g.id === guestId);
+                    if (guest) {
+                        guestNameElement.textContent = guest.name;
+                    } else {
+                        guestNameElement.textContent = "ضيفنا الكريم";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    guestNameElement.textContent = "ضيفنا الكريم";
+                });
+
+            envelopeBtn.addEventListener('click', function() {
+                this.style.animation = 'fadeOut 0.4s forwards';
+                setTimeout(() => {
+                    this.style.display = 'none';
+                    inviteCard.classList.add('show');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
