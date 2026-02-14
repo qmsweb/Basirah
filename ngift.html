@@ -65,14 +65,14 @@
             margin-bottom: 10px;
         }
 
-        /* تنسيق خاص للاسم المجلوب */
         .recipient-name {
             display: block;
-            font-size: 20px;
-            margin-top: 5px;
+            font-size: 22px; /* تكبير الخط قليلاً */
+            margin-top: 10px;
             color: var(--accent-color);
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            min-height: 30px; /* حجز مكان للاسم حتى لا يقفز التصميم */
         }
 
         .cover-subtitle {
@@ -187,13 +187,29 @@
             gap: 8px;
         }
 
-        .logo-area {
+        /* --- تعديلات الشعار والمسافة --- */
+        .footer-container {
             margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px; /* مسافة صغيرة جداً بين النص والشعار */
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: #b2bec3;
+            margin: 0; /* إزالة الهوامش الافتراضية */
+        }
+
+        .logo-area {
             opacity: 0.7;
             max-width: 100px;
             height: auto;
             filter: grayscale(100%);
             transition: 0.3s;
+            margin-top: 5px; /* تم تقليل المسافة هنا */
+            display: block;
         }
         
         .logo-area:hover {
@@ -214,10 +230,10 @@
         
         <div class="cover-layer" id="headerSection">
             <span class="cover-icon">🎁</span>
-            <h1 class="cover-title">
+            <div class="cover-title">
                 مبارك لك التفوق!
                 <span id="nameDisplay" class="recipient-name"></span>
-            </h1>
+            </div>
             <p class="cover-subtitle" id="subTitle">لديك رسالة خاصة وهدية بانتظارك</p>
             <button class="open-btn" onclick="revealMessage()">اضغط هنا للفتح</button>
         </div>
@@ -248,8 +264,8 @@
                 </div>
             </div>
 
-            <div style="margin-top: 20px;">
-                <p style="font-size: 13px; color: #b2bec3;">مع خالص التمنيات بالتوفيق</p>
+            <div class="footer-container">
+                <p class="footer-text">مع خالص التمنيات بالتوفيق</p>
                 <img src="logo/jassim.png" alt="Logo" class="logo-area">
             </div>
 
@@ -257,33 +273,44 @@
     </div>
 
     <script>
-        // 1. تشغيل الكود فور تحميل الصفحة لجلب الاسم
         document.addEventListener('DOMContentLoaded', async () => {
-            // استخراج الرقم من الرابط ?i=5
+            // استخراج المتغير من الرابط سواء كان اسمه i أو id
             const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('i');
+            const userId = urlParams.get('id') || urlParams.get('i');
 
             if (userId) {
                 try {
-                    // جلب ملف الـ JSON
+                    // جلب ملف البيانات
                     const response = await fetch('giftname.json');
+                    
+                    // التحقق من نجاح عملية الجلب
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const users = await response.json();
                     
-                    // البحث عن الشخص صاحب الرقم المطابق
-                    // == تستخدم للمقارنة حتى لو كان الرقم نصاً في الرابط ورقماً في الملف
+                    // البحث عن المستخدم
                     const user = users.find(u => u.id == userId); 
 
                     if (user) {
-                        // عرض الاسم مع إضافة "يا" قبله
-                        document.getElementById('nameDisplay').textContent = `يا ${user.name}`;
+                        // تحديث الاسم في الصفحة
+                        const nameSpan = document.getElementById('nameDisplay');
+                        nameSpan.textContent = `يا ${user.name}`;
+                        nameSpan.style.display = 'block'; // تأكيد الظهور
+                    } else {
+                        console.warn('لم يتم العثور على مستخدم بهذا الرقم:', userId);
                     }
                 } catch (error) {
-                    console.error('حدث خطأ في جلب البيانات:', error);
+                    console.error('حدث خطأ في جلب البيانات. تأكد من تشغيل السيرفر ومن صحة ملف JSON:', error);
+                    // يمكنك هنا وضع اسم افتراضي في حالة الخطأ إذا رغبت
+                    // document.getElementById('nameDisplay').textContent = "يا بطل";
                 }
+            } else {
+                console.log("لا يوجد معرف (ID) في الرابط");
             }
         });
 
-        // 2. دالة فتح الرسالة (نفس السابقة)
         function revealMessage() {
             const card = document.getElementById('mainCard');
             const btn = document.querySelector('.open-btn');
