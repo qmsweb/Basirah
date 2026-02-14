@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta property="og:title" content="لقد وصلتك هدية خاصة!">
-    <meta property="og:description" content="لديك هدية خاصة، اضغط لفتحها">
+    <meta property="og:title" content="مبارك لك النجاح!">
+    <meta property="og:description" content="لديك زاجل خاص بانتظارك، اضغط للتفاصيل">
     <meta property="og:image" content="https://www.basirah.me/logo/invite-cover.png">
     <meta property="og:url" content="https://www.basirah.me/">
     <meta property="og:type" content="website">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>هدية خاصة</title>
+    <title>مبارك النجاح</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- تم تغيير الألوان إلى الأزرق --- */
             --primary-color: #0d47a1; /* أزرق داكن */
             --secondary-color: #42a5f5; /* أزرق فاتح */
             --bg-light: #f8fbfb;
             --text-dark: #333;
-            /* تحديث لون الظل ليتناسب مع الأزرق */
             --shadow-md: 0 10px 25px rgba(13, 71, 161, 0.15);
             --radius: 16px;
         }
@@ -47,7 +45,7 @@
             padding: 15px;
         }
 
-        /* --- تنسيق الهدية (بدلاً من الظرف) --- */
+        /* --- تنسيق الهدية --- */
         .envelope-stage {
             cursor: pointer;
             text-align: center;
@@ -63,7 +61,6 @@
         .envelope-circle {
             width: 120px;
             height: 120px;
-            /* تدرج لوني أزرق */
             background: linear-gradient(135deg, var(--primary-color), #002171);
             border-radius: 50%;
             display: flex;
@@ -86,11 +83,11 @@
             opacity: 0.8;
         }
 
-        /* --- تنسيق بطاقة الدعوة --- */
+        /* --- تنسيق البطاقة --- */
         .invitation-container {
             background: #ffffff;
             border-radius: var(--radius);
-            padding: 50px 30px;
+            padding: 40px 30px;
             text-align: center;
             width: 100%;
             max-width: 450px;
@@ -109,31 +106,30 @@
 
         .card-icon {
             color: var(--secondary-color);
-            font-size: 35px;
+            font-size: 40px;
             margin-bottom: 15px;
         }
 
         .invitation-title {
             color: var(--primary-color);
-            font-size: 2rem;
-            margin: 0 0 10px;
+            font-size: 1.8rem;
+            margin: 0 0 5px;
             font-weight: 700;
         }
 
         .guest-name {
-            color: #002171; /* لون نص أزرق غامق */
-            font-size: 1.5rem;
-            margin: 10px 0 20px;
+            color: #002171;
+            font-size: 1.4rem;
+            margin: 5px 0 15px;
             font-weight: 600;
             position: relative;
             display: inline-block;
-            word-wrap: break-word;
         }
         
         .guest-name::after {
             content: '';
             display: block;
-            width: 40%;
+            width: 50%;
             height: 3px;
             background-color: var(--secondary-color);
             margin: 5px auto 0;
@@ -144,8 +140,51 @@
         .invitation-text {
             color: #555;
             font-size: 1rem;
-            line-height: 1.8;
-            margin: 0;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* --- تنسيق تفاصيل الموقع والوقت --- */
+        .details-box {
+            background-color: #eef7ff; /* خلفية زرقاء فاتحة جداً */
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: right;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-row i {
+            color: var(--primary-color);
+            width: 25px;
+            margin-top: 4px; /* لضبط المحاذاة مع النص */
+            margin-left: 10px;
+            font-size: 1.1rem;
+        }
+
+        .time-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .signature {
+            margin-top: 25px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
         }
 
         /* --- Animations --- */
@@ -166,32 +205,11 @@
 
         /* --- Media Queries --- */
         @media (max-width: 480px) {
-            .invitation-container {
-                padding: 30px 20px;
-                max-width: 95%;
-            }
-            
-            .invitation-title {
-                font-size: 1.7rem;
-            }
-
-            .guest-name {
-                font-size: 1.3rem;
-            }
-
-            .invitation-text {
-                font-size: 0.95rem;
-                line-height: 1.6;
-            }
-            
-            .envelope-circle {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .envelope-circle i {
-                font-size: 40px;
-            }
+            .invitation-container { padding: 30px 20px; }
+            .invitation-title { font-size: 1.5rem; }
+            .guest-name { font-size: 1.2rem; }
+            .invitation-text { font-size: 0.9rem; }
+            .details-box { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -199,25 +217,45 @@
 
     <div class="envelope-stage" id="envelopeBtn">
         <div class="envelope-circle">
-            <i class="fas fa-gift"></i>
+            <i class="fas fa-dove"></i>
         </div>
-        <span class="click-hint">اضغط لفتح الهدية</span>
+        <span class="click-hint">لديك زاجل.. اضغط لاستلامه</span>
     </div>
 
     <div class="invitation-container" id="inviteCard">
         <div class="card-icon">
-            <i class="fas fa-gift"></i>
+            <i class="fas fa-medal"></i>
         </div>
-        <h1 class="invitation-title">دعوة خاصة</h1>
         
+        <h1 class="invitation-title">مبارك النجاح</h1>
         <h2 class="guest-name" id="guestName">...</h2>
         
         <p class="invitation-text">
-            يسعدنا دعوتكم لحضور إطلاق منصة "بَيْن"<br>
-            ضمن برنامج احتفال جامعة الشرقية باليوم العالمي للغة العربية<br>
-            يوم الإثنين 22 ديسمبر 2025<br>
-            في تمام الساعة 9:00 صباحًا
+            لقد وصل صدى نجاحك إلى عنان السماء قبل أن يصلنا الخبر.<br>
+            نسبةٌ تليقُ بهمةٍ لا تعرفُ المستحيل، فهنيئًا لك القمة.
+            <br><br>
+            واحتفاءً بهذا الإنجاز، بانتظارك <strong>"زاجل"</strong> خاص نأمل منك التفضل باستلامه.
         </p>
+
+        <div class="details-box">
+            <div class="detail-row">
+                <i class="fas fa-location-dot"></i>
+                <span><strong>الموقع:</strong> التسعينيات كافيه</span>
+            </div>
+            
+            <div class="detail-row">
+                <i class="fas fa-clock"></i>
+                <div class="time-group">
+                    <span><strong>الصباح:</strong> 7:30 - 12:30 م</span>
+                    <span><strong>المساء:</strong> 3:00 - 11:00 م</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="signature">
+            كل التوفيق لك،<br>
+            <span style="font-weight: 400; font-size: 0.9em; color: #555;">جاسم الفارسي</span>
+        </div>
     </div>
 
     <script>
@@ -226,9 +264,11 @@
             const inviteCard = document.getElementById('inviteCard');
             const guestNameElement = document.getElementById('guestName');
 
+            // جلب الاسم من الرابط ?id=1 أو استخدام افتراضي
             const urlParams = new URLSearchParams(window.location.search);
             const guestId = urlParams.get('id') || '1';
 
+            // محاكاة جلب البيانات (يمكنك تعديل الرابط لملف json الحقيقي)
             fetch('guests.json')
                 .then(response => response.json())
                 .then(data => {
@@ -236,12 +276,12 @@
                     if (guest) {
                         guestNameElement.textContent = guest.name;
                     } else {
-                        guestNameElement.textContent = "ضيفنا الكريم";
+                        guestNameElement.textContent = "المتميز دائماً";
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    guestNameElement.textContent = "ضيفنا الكريم";
+                    guestNameElement.textContent = "المتميز دائماً";
                 });
 
             envelopeBtn.addEventListener('click', function() {
