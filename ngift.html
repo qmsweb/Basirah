@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسالة خاصة لك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            overflow: hidden;
+            text-align: center;
+            border: 1px solid #eaeaea;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #ffffff;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* تنسيق الزر وتأثيراته */
+        .reveal-btn {
+            background: linear-gradient(45deg, #d35400, #e67e22);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(211, 84, 0, 0.4);
+            margin-top: -25px; /* يرفع الزر قليلاً ليدخل في الهيدر */
+            position: relative;
+            z-index: 10;
+            transition: transform 0.2s, box-shadow 0.2s;
+            outline: none;
+            /* حركة النبض */
+            animation: pulse 2s infinite;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(211, 84, 0, 0.6);
+        }
+
+        .reveal-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(230, 126, 34, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
+        }
+
+        /* المحتوى المخفي */
+        .message-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease-out, opacity 0.5s ease-in;
+            padding: 0 25px;
+        }
+
+        /* كلاس التفعيل */
+        .message-content.open {
+            max-height: 1000px; /* قيمة كبيرة لضمان ظهور المحتوى */
+            opacity: 1;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .quote {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            background: #fff8f3;
+            padding: 15px;
+            border-radius: 12px;
+            border-right: 4px solid #d35400;
+            margin-bottom: 25px;
+            text-align: right;
+        }
+
+        .highlight-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .location-box {
+            background-color: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #eee;
+        }
+
+        .location-title {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .hours-tag {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .hours-line {
+            display: block;
+            color: #555;
+            font-size: 15px;
+            margin: 5px 0;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .logo {
+            max-width: 140px;
+            height: auto;
+            margin-top: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        /* إخفاء الزر بعد الضغط */
+        .hidden-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <h1>تهنئة خاصة</h1>
+            <p>لديك رسالة هامة تنتظر قراءتك...</p>
+        </div>
+        
+        <button class="reveal-btn" onclick="openMessage(this)">اضغط لفتح الرسالة 📩</button>
+
+        <div class="message-content" id="secretMessage">
+            <div class="quote">
+                <strong>مبارك لك، لقد وصل صدى نجاحك إلى عنان السماء.</strong><br>
+                نسبةٌ تليقُ بهمةٍ لا تعرفُ المستحيل، فهنيئًا لك القمة.
+            </div>
+
+            <p class="highlight-text">
+                🎉 لديك "زاجل" بانتظارك لتستلمه
+            </p>
+
+            <div class="location-box">
+                <div class="location-title">
+                    <span>📍</span> التسعينيات كافيه
+                </div>
+                
+                <div>
+                    <span class="hours-tag">أوقات الدوام للاستلام</span>
+                    <span class="hours-line">☀️ الصباح: 7:30 - 12:30 م</span>
+                    <span class="hours-line">🌙 المساء: 3:00 - 11:00 م</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p style="color: #888; font-size: 14px; margin-bottom:15px;">كل التوفيق لك،</p>
+                <img src="logo/jassim.png" alt="جاسم الفارسي" class="logo">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openMessage(btn) {
+            var content = document.getElementById("secretMessage");
+            
+            // إضافة كلاس لفتح الرسالة
+            content.classList.add("open");
+            
+            // تغيير نص الزر أو إخفاؤه (اخترنا إخفاءه لجمالية التصميم)
+            btn.style.transition = "0.3s";
+            btn.style.opacity = "0";
+            btn.style.transform = "scale(0.8)";
+            
+            setTimeout(() => {
+                btn.style.display = "none";
+            }, 300);
+        }
+    </script>
+
+</body>
+</html>
