@@ -78,9 +78,9 @@
             max-width: 250px;
             width: 100%;
             height: auto;
-            min-height: 80px; /* لحماية الـ SVG من الاختفاء إذا لم يكن له أبعاد داخلية */
+            min-height: 80px;
             animation: pulse 3s infinite ease-in-out;
-            pointer-events: none; /* لمنع التفاعل مع الكائن كملف خارجي */
+            pointer-events: none; 
         }
 
         h1 {
@@ -92,15 +92,13 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px; /* المسافة بين الكلمات */
+            gap: 12px;
         }
 
-        /* تنسيق الكلمات المسترسلة */
-        .word {
-            display: inline-block;
-            opacity: 0;
-            transform: scale(0.8);
-            /* سيتم التحكم بالانتقال عبر الجافاسكربت */
+        /* تنسيق لتأكيد اتصال الحروف وعدم انكسارها */
+        .word-group {
+            display: inline;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
@@ -122,68 +120,78 @@
 <body>
 
     <div class="container" id="main-container">
-        <!-- استخدام object لدعم أكيد لملفات SVG مع صورة بديلة -->
+        <!-- استخدام object لدعم ملفات SVG -->
         <object data="images/basirah-black.svg" type="image/svg+xml" class="logo">
             <img src="images/basirah-black.svg" alt="شبكة بصيرة" class="logo">
         </object>
         
-        <!-- الحاوية التي ستظهر فيها الكلمات المتحركة -->
+        <!-- الحاوية التي ستظهر فيها الكلمات القابلة للتمطيط -->
         <h1 id="animated-text"></h1>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // تأثير الظهور التدريجي للحاوية
+            // تأثير الظهور التدريجي للحاوية عند التحميل
             const container = document.getElementById("main-container");
             setTimeout(() => {
                 container.classList.add("loaded");
             }, 150);
 
-            // إعداد تأثير الكلمات المسترسلة
-            const text = "سنعود قريبًا بحلة جديدة";
+            // إعدادات الكلمات ومواضع تمطيط الكشيدة (ـ)
+            // قمنا بفصل الكلمة في الموضع القابل للاتصال
+            const wordsConfig = [
+                { start: "سنع", end: "ود" },
+                { start: "قري", end: "بًا" },
+                { start: "بحل", end: "ة" },
+                { start: "جدي", end: "دة" }
+            ];
+
             const textContainer = document.getElementById("animated-text");
             
-            // تقسيم النص إلى كلمات ووضعها داخل وسوم span
-            const words = text.split(" ");
-            textContainer.innerHTML = words.map(w => `<span class="word">${w}</span>`).join("");
-            
-            const wordElements = document.querySelectorAll('.word');
+            // بناء الهيكل الخاص بالنص بحيث لا توجد مسافات بين الحروف القابلة للاتصال
+            textContainer.innerHTML = wordsConfig.map((w, index) => 
+                `<span class="word-group">${w.start}<span id="kashida-${index}"></span>${w.end}</span>`
+            ).join(" ");
 
-            // دالة الحركة المستمرة (Loop)
-            async function runTextAnimation() {
+            const maxStretch = 6; // أقصى عدد لحروف الكشيدة (طول التميط)
+            const stretchSpeed = 60; // سرعة التمدد بالملي ثانية
+            
+            // دالة مساعدة للتوقف الزمني
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            // دالة الحركة المستمرة
+            async function runKashidaAnimation() {
                 while(true) {
-                    // 1. إعادة ضبط الكلمات (إخفاء وتصغير)
-                    wordElements.forEach(w => {
-                        w.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-                        w.style.opacity = "0";
-                        w.style.transform = "scale(0.8)";
-                    });
-                    
-                    // انتظار قصير قبل بدء الاسترسال
-                    await new Promise(r => setTimeout(r, 600));
-                    
-                    // 2. إظهار الكلمات تباعاً (تكبير ثم عودة للحجم الطبيعي)
-                    for (let i = 0; i < wordElements.length; i++) {
-                        // إظهار الكلمة وتكبيرها قليلاً (تأثير النبض أو الظهور)
-                        wordElements[i].style.opacity = "1";
-                        wordElements[i].style.transform = "scale(1.15)";
-                        
-                        await new Promise(r => setTimeout(r, 300));
-                        
-                        // إعادة الكلمة لحجمها الطبيعي
-                        wordElements[i].style.transform = "scale(1)";
-                        
-                        // انتظار بسيط قبل الكلمة التالية
-                        await new Promise(r => setTimeout(r, 150));
+                    // 1. تمطيط النص كلمة كلمة
+                    for (let i = 0; i < wordsConfig.length; i++) {
+                        const kashidaSpan = document.getElementById(`kashida-${i}`);
+                        for (let k = 1; k <= maxStretch; k++) {
+                            kashidaSpan.textContent = "ـ".repeat(k);
+                            await sleep(stretchSpeed);
+                        }
+                        // توقف بسيط بعد اكتمال تمطيط كل كلمة
+                        await sleep(150); 
                     }
                     
-                    // 3. بقاء النص مكتملاً بحجمه الطبيعي لفترة ليتمكن الزائر من قراءته
-                    await new Promise(r => setTimeout(r, 3000));
+                    // 2. بقاء النص ممتداً بالكامل لفترة ليتمكن الزائر من ملاحظته
+                    await sleep(2000);
+                    
+                    // 3. التراجع للحجم الطبيعي بشكل سريع وسلس لجميع الكلمات معاً
+                    for (let k = maxStretch; k >= 0; k--) {
+                        for (let i = 0; i < wordsConfig.length; i++) {
+                            const kashidaSpan = document.getElementById(`kashida-${i}`);
+                            kashidaSpan.textContent = k === 0 ? "" : "ـ".repeat(k);
+                        }
+                        await sleep(stretchSpeed - 20); // تراجع أسرع قليلاً من التمدد
+                    }
+                    
+                    // 4. توقف قبل إعادة بدء الحركة
+                    await sleep(1500);
                 }
             }
 
-            // تشغيل الحركة
-            runTextAnimation();
+            // تشغيل حركة الاسترسال
+            runKashidaAnimation();
         });
     </script>
 </body>
