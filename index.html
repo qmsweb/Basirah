@@ -3,19 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سنعود قريبًا</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>شبكة بصيرة - قريباً</title>
+    
+    <style>
+        /* إعدادات الخطوط بناءً على المسارات المحددة */
+        @font-face {
+            font-family: 'Thmanyah Serif';
+            src: url('fonts/8/thmanyahseriftext-Black.otf') format('opentype');
+            font-weight: 900;
+        }
+
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/8/thmanyahsans-Light.otf') format('opentype');
+            font-weight: 300;
+        }
+
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/8/thmanyahsans-Regular.otf') format('opentype');
+            font-weight: 400;
+        }
+
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/8/thmanyahsans-Medium.otf') format('opentype');
+            font-weight: 500;
+        }
+
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/8/thmanyahsans-Bold.otf') format('opentype');
+            font-weight: 700;
+        }
+
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/8/thmanyahsans-Black.otf') format('opentype');
+            font-weight: 900;
+        }
+
+        /* الإعدادات الأساسية والتصميم */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* تدرج لوني مستوحى من الصورة المرفقة */
+            background: linear-gradient(180deg, #1be9d8 0%, #0cdbf0 100%);
+            color: #000000;
+            font-family: 'Thmanyah Sans', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            /* إعدادات الحركة (الأنيميشن) للظهور */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            padding: 20px;
+        }
+
+        /* صنف يتم إضافته عبر الجافاسكربت لإظهار المحتوى */
+        .container.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .logo {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+            /* حركة نبض خفيفة للشعار */
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        h1 {
+            font-family: 'Thmanyah Serif', serif;
+            font-weight: 900;
+            font-size: 2.8rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .dots {
+            display: inline-block;
+            width: 30px;
+            text-align: right;
+            direction: ltr;
+        }
+
+        /* تأثير النبض المستمر للشعار */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* التجاوب مع شاشات الهواتف */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .logo {
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="content">
-            <h1 id="main-text">سنعود قريبًا</h1>
-            <div class="loader"></div>
-        </div>
+
+    <div class="container" id="main-container">
+        <!-- الشعار بالمسار المطلوب -->
+        <img src="images/basirah-black.svg" alt="شبكة بصيرة" class="logo">
+        
+        <!-- النص مع خط العناوين -->
+        <h1>سنعود قريبًا بحلة جديدة<span class="dots" id="loading-dots"></span></h1>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // تأثير الظهور التدريجي عند تحميل الصفحة
+            const container = document.getElementById("main-container");
+            setTimeout(() => {
+                container.classList.add("loaded");
+            }, 150);
+
+            // تأثير النقاط المتحركة بجانب النص
+            const dotsElement = document.getElementById("loading-dots");
+            let dotCount = 0;
+            
+            setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                dotsElement.textContent = ".".repeat(dotCount);
+            }, 600);
+        });
+    </script>
 </body>
 </html>
