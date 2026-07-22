@@ -51,7 +51,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* تدرج لوني مستوحى من الصورة المرفقة */
             background: linear-gradient(180deg, #1be9d8 0%, #0cdbf0 100%);
             color: #000000;
             font-family: 'Thmanyah Sans', sans-serif;
@@ -64,14 +63,12 @@
             flex-direction: column;
             align-items: center;
             gap: 2rem;
-            /* إعدادات الحركة (الأنيميشن) للظهور */
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 1.2s ease-out, transform 1.2s ease-out;
             padding: 20px;
         }
 
-        /* صنف يتم إضافته عبر الجافاسكربت لإظهار المحتوى */
         .container.loaded {
             opacity: 1;
             transform: translateY(0);
@@ -81,8 +78,9 @@
             max-width: 250px;
             width: 100%;
             height: auto;
-            /* حركة نبض خفيفة للشعار */
+            min-height: 80px; /* لحماية الـ SVG من الاختفاء إذا لم يكن له أبعاد داخلية */
             animation: pulse 3s infinite ease-in-out;
+            pointer-events: none; /* لمنع التفاعل مع الكائن كملف خارجي */
         }
 
         h1 {
@@ -90,24 +88,27 @@
             font-weight: 900;
             font-size: 2.8rem;
             margin: 0;
-            line-height: 1.4;
+            line-height: 1.6;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; /* المسافة بين الكلمات */
         }
 
-        .dots {
+        /* تنسيق الكلمات المسترسلة */
+        .word {
             display: inline-block;
-            width: 30px;
-            text-align: right;
-            direction: ltr;
+            opacity: 0;
+            transform: scale(0.8);
+            /* سيتم التحكم بالانتقال عبر الجافاسكربت */
         }
 
-        /* تأثير النبض المستمر للشعار */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.03); }
             100% { transform: scale(1); }
         }
 
-        /* التجاوب مع شاشات الهواتف */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -121,29 +122,68 @@
 <body>
 
     <div class="container" id="main-container">
-        <!-- الشعار بالمسار المطلوب -->
-        <img src="images/basirah-black.svg" alt="شبكة بصيرة" class="logo">
+        <!-- استخدام object لدعم أكيد لملفات SVG مع صورة بديلة -->
+        <object data="images/basirah-black.svg" type="image/svg+xml" class="logo">
+            <img src="images/basirah-black.svg" alt="شبكة بصيرة" class="logo">
+        </object>
         
-        <!-- النص مع خط العناوين -->
-        <h1>سنعود قريبًا بحلة جديدة<span class="dots" id="loading-dots"></span></h1>
+        <!-- الحاوية التي ستظهر فيها الكلمات المتحركة -->
+        <h1 id="animated-text"></h1>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // تأثير الظهور التدريجي عند تحميل الصفحة
+            // تأثير الظهور التدريجي للحاوية
             const container = document.getElementById("main-container");
             setTimeout(() => {
                 container.classList.add("loaded");
             }, 150);
 
-            // تأثير النقاط المتحركة بجانب النص
-            const dotsElement = document.getElementById("loading-dots");
-            let dotCount = 0;
+            // إعداد تأثير الكلمات المسترسلة
+            const text = "سنعود قريبًا بحلة جديدة";
+            const textContainer = document.getElementById("animated-text");
             
-            setInterval(() => {
-                dotCount = (dotCount + 1) % 4;
-                dotsElement.textContent = ".".repeat(dotCount);
-            }, 600);
+            // تقسيم النص إلى كلمات ووضعها داخل وسوم span
+            const words = text.split(" ");
+            textContainer.innerHTML = words.map(w => `<span class="word">${w}</span>`).join("");
+            
+            const wordElements = document.querySelectorAll('.word');
+
+            // دالة الحركة المستمرة (Loop)
+            async function runTextAnimation() {
+                while(true) {
+                    // 1. إعادة ضبط الكلمات (إخفاء وتصغير)
+                    wordElements.forEach(w => {
+                        w.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                        w.style.opacity = "0";
+                        w.style.transform = "scale(0.8)";
+                    });
+                    
+                    // انتظار قصير قبل بدء الاسترسال
+                    await new Promise(r => setTimeout(r, 600));
+                    
+                    // 2. إظهار الكلمات تباعاً (تكبير ثم عودة للحجم الطبيعي)
+                    for (let i = 0; i < wordElements.length; i++) {
+                        // إظهار الكلمة وتكبيرها قليلاً (تأثير النبض أو الظهور)
+                        wordElements[i].style.opacity = "1";
+                        wordElements[i].style.transform = "scale(1.15)";
+                        
+                        await new Promise(r => setTimeout(r, 300));
+                        
+                        // إعادة الكلمة لحجمها الطبيعي
+                        wordElements[i].style.transform = "scale(1)";
+                        
+                        // انتظار بسيط قبل الكلمة التالية
+                        await new Promise(r => setTimeout(r, 150));
+                    }
+                    
+                    // 3. بقاء النص مكتملاً بحجمه الطبيعي لفترة ليتمكن الزائر من قراءته
+                    await new Promise(r => setTimeout(r, 3000));
+                }
+            }
+
+            // تشغيل الحركة
+            runTextAnimation();
         });
     </script>
 </body>
